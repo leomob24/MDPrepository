@@ -12,8 +12,9 @@ public class Superpower {
     private int atk;
     private int hp;
     private float damageMultiplier;
+    private int bonusAtk;
 
-    public Superpower(String powerName, int atk, int hp, float damageMultiplier){
+    public Superpower(String powerName, int atk, int hp, float damageMultiplier, int bonusAtk){
         if (powerName == null || powerName.isEmpty()) {
             throw new IllegalArgumentException("Power name cannot be null or empty");
         }
@@ -30,5 +31,6 @@ public class Superpower {
         this.atk = atk;
         this.hp = hp;
         this.damageMultiplier = damageMultiplier;
+        this.bonusAtk = bonusAtk;
     }
 }

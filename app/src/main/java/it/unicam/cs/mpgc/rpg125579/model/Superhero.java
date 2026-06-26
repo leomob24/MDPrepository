@@ -15,6 +15,7 @@ public class Superhero {
     private int atk;
     private int hp;
     private float damageMultiplier;
+    private int bonusAtk;
 
     public Superhero(String name, Superpower superpower) {
         if (name == null || name.isEmpty()) {
@@ -28,5 +29,7 @@ public class Superhero {
         this.atk = superpower.getAtk();
         this.hp = superpower.getHp();
         this.damageMultiplier = superpower.getDamageMultiplier();
+        this.bonusAtk = superpower.getBonusAtk();
+
     }
 }
