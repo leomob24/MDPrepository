@@ -1,35 +1,23 @@
 package it.unicam.cs.mpgc.rpg125579.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Superhero {
-    private String name;
+public class Superhero extends Character {
+
     private Superpower superpower;
-    private int atk;
-    private int hp;
-    private float damageMultiplier;
-    private int bonusAtk;
 
     public Superhero(String name, Superpower superpower) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
+        super(name, validate(superpower).getAtk(), superpower.getHp(),
+                superpower.getDamageMultiplier(), superpower.getBonusAtk());
+        this.superpower = superpower;
+    }
+
+    private static Superpower validate(Superpower superpower) {
         if (superpower == null) {
             throw new IllegalArgumentException("Superpower cannot be null");
         }
-        this.name = name;
-        this.superpower = superpower;
-        this.atk = superpower.getAtk();
-        this.hp = superpower.getHp();
-        this.damageMultiplier = superpower.getDamageMultiplier();
-        this.bonusAtk = superpower.getBonusAtk();
-
+        return superpower;
     }
 }
