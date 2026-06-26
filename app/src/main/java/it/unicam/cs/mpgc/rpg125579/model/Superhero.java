@@ -14,7 +14,7 @@ public class Superhero {
     private Superpower superpower;
     private int atk;
     private int hp;
-    private int damageMultiplier;
+    private float damageMultiplier;
 
     public Superhero(String name, Superpower superpower) {
         if (name == null || name.isEmpty()) {
