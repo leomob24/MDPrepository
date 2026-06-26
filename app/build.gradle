@@ -23,6 +23,15 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    // Versione di Lombok
+    def lombokVersion = '1.18.30'
+
+    // Necessario per scrivere il codice
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+    // Necessario al compilatore per generare effettivamente i metodi
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -33,7 +42,7 @@ java {
 }
 
 application {
-    // Define the main class for the application.
+    // Define the main class fo the application.
     mainClass = 'it.unicam.cs.mpgc.rpg125579.App'
 }
 
