@@ -1,5 +1,6 @@
-package it.unicam.cs.mpgc.rpg125579.model;
+package it.unicam.cs.mpgc.rpg125579.model.entity;
 
+import it.unicam.cs.mpgc.rpg125579.model.power.Superpower;
 import lombok.*;
 
 @Getter
@@ -9,8 +10,7 @@ public class Superhero extends Character {
     private Superpower superpower;
 
     public Superhero(String name, Superpower superpower) {
-        super(name, validate(superpower).getAtk(), superpower.getHp(),
-                superpower.getDamageMultiplier(), superpower.getBonusAtk());
+        super(name, validate(superpower).getAtk(), superpower.getDef(), superpower.getHp(), superpower.getBonusAtk());
         this.superpower = superpower;
     }
 

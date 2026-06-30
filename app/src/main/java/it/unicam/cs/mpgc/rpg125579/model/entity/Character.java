@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg125579.model;
+package it.unicam.cs.mpgc.rpg125579.model.entity;
 
 import lombok.*;
 
@@ -8,22 +8,25 @@ public abstract class Character {
 
     private String name;
     private int atk;
+    private int def;
     private int hp;
-    private float damageMultiplier;
+    private int hpAttuali;
     private int bonusAtk;
 
-    protected Character(String name, int atk, int hp, float damageMultiplier, int bonusAtk) {
+    protected Character(String name, int atk, int def, int hp, int bonusAtk) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
         this.name = name;
         this.atk = atk;
+        this.def = def;
         this.hp = hp;
-        this.damageMultiplier = damageMultiplier;
+        this.hpAttuali = hp;
         this.bonusAtk = bonusAtk;
     }
 
-    void setHp(int hp) {
-        this.hp = Math.max(hp, 0);
+
+    public void setHpAttuali(int hpAttuali) {
+        this.hpAttuali = Math.max(hpAttuali, 0);
     }
 }

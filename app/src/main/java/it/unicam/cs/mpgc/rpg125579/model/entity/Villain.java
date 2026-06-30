@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg125579.model;
+package it.unicam.cs.mpgc.rpg125579.model.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
