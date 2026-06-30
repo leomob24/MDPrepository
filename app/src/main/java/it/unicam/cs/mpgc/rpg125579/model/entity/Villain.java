@@ -21,11 +21,11 @@ public class Villain extends Character {
      * @param name Nome assegnato
      * @param atk Punti attacco assegnati
      * @param hp Punti vita assegnati
-     * @param damageMultiplier Moltiplicatore di danni
+     * @param def Punti difesa assegnati
      * @param bonusAtk Punti bonus per l'attacco
      */
-    private Villain(String name, int atk, int hp, float damageMultiplier, int bonusAtk) {
-        super(name, atk, hp, damageMultiplier, bonusAtk);
+    private Villain(String name, int atk, int hp, int def, int bonusAtk) {
+        super(name, atk, hp, def, bonusAtk);
     }
 
     /**
@@ -37,8 +37,8 @@ public class Villain extends Character {
         String name = VILLAIN_NAMES[random.nextInt(VILLAIN_NAMES.length)];
         int atk = random.nextInt(20) + 30;
         int hp = random.nextInt(100) + 100;
-        float damageMultiplier = (random.nextInt(10) + 11) / 10.0f;
+        int def = random.nextInt(10) + 10;
         int bonusAtk = random.nextInt(5) + 1;
-        return new Villain(name, atk, hp, damageMultiplier, bonusAtk);
+        return new Villain(name, atk, hp, def, bonusAtk);
     }
 }

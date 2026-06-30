@@ -18,10 +18,11 @@ public class Minion extends Character {
      * Costruttore per la classe Minion. E' privato perchè l'unico modo per costruire un oggetto Minion è tramite il metodo statico generateMinion().
      * @param name Nome assegnato
      * @param atk Punti attacco assegnati
+     * @param def Punti difesa assegnati
      * @param hp Punti vita assegnati
      */
-    private Minion(String name, int atk, int hp) {
-        super(name, atk, hp, 1.0f, 0);
+    private Minion(String name, int atk, int def, int hp) {
+        super(name, atk, def, hp, 0);
     }
 
     /**
@@ -32,7 +33,8 @@ public class Minion extends Character {
         Random random = new Random();
         String name = MINION_NAMES[random.nextInt(MINION_NAMES.length)];
         int atk = random.nextInt(10) + 10;
+        int def = random.nextInt(5) + 5;
         int hp = random.nextInt(50) + 20;
-        return new Minion(name, atk, hp);
+        return new Minion(name, atk, def, hp);
     }
 }
