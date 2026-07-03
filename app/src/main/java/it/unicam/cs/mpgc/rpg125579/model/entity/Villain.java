@@ -2,9 +2,18 @@ package it.unicam.cs.mpgc.rpg125579.model.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import jakarta.persistence.*;
 import java.util.Random;
 
+/**
+ * Entità che rappresenta un antagonista (Villain) nel gioco.
+ * Eredita da Character e aggiunge la generazione casuale dei parametri.
+ */
+@Entity
+@DiscriminatorValue("VILLAIN")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Villain extends Character {
 

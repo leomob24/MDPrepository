@@ -1,9 +1,17 @@
 package it.unicam.cs.mpgc.rpg125579.model.entity;
 
 import lombok.*;
+import jakarta.persistence.*;
 import java.util.Random;
 
+/**
+ * Entità che rappresenta un Minion nel gioco.
+ * Eredita da Character e aggiunge la generazione casuale dei parametri.
+ */
+@Entity
+@DiscriminatorValue("MINION")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Minion extends Character {
 
@@ -14,6 +22,7 @@ public class Minion extends Character {
             "The Tickler", "Justin Case", "Barry Cades", "Friendly-Fire Frank",
             "The Distraction", "Red Shirt Rick", "Poison-Taster Paul", "Glow-in-the-Dark Greg"
     };
+
     /**
      * Costruttore per la classe Minion. E' privato perchè l'unico modo per costruire un oggetto Minion è tramite il metodo statico generateMinion().
      * @param name Nome assegnato
