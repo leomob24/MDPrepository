@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg125579.view.SuperpowerCreationView">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <VBox spacing="15.0">
+        <Label text="Create a Superpower">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+
+        <GridPane hgap="10.0" vgap="10.0">
+            <Label text="Name" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="HP" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="txtHp" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="ATK" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="txtAtk" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="DEF" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="txtDef" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label text="BONUS ATK" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <TextField fx:id="txtBonusAtk" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        </GridPane>
+    </VBox>
+
+    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+        <Label text="List of superpowers created" />
+        <ListView fx:id="listSuperpowers" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+        <Button fx:id="btnCreatePower" mnemonicParsing="false" onAction="#handleCreatePower" text="Create" alignment="CENTER_RIGHT" />
+    </VBox>
+</HBox>
