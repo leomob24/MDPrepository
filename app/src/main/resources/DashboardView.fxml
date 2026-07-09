@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.rpg125579.view.DashboardController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10.0">
+        <Label text="Superbattles">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnSuperpowers" mnemonicParsing="false" onAction="#handleManageSuperpowers" text="Superpowers" />
+        <Button fx:id="btnRules" mnemonicParsing="false" onAction="#handleShowRules" text="?" />
+    </HBox>
+
+    <Label text="Recent Games">
+        <font>
+            <Font size="16.0" />
+        </font>
+    </Label>
+
+    <TableView fx:id="gamesTable" prefHeight="200.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colSuperName" prefWidth="100.0" text="SuperName" />
+            <TableColumn fx:id="colHp" prefWidth="60.0" text="HP" />
+            <TableColumn fx:id="colSuperpower" prefWidth="120.0" text="Superpower" />
+            <TableColumn fx:id="colAtk" prefWidth="60.0" text="ATK" />
+            <TableColumn fx:id="colDef" prefWidth="60.0" text="DEF" />
+            <TableColumn fx:id="colBonus" prefWidth="60.0" text="Bonus" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="15.0">
+        <Button fx:id="btnNewGame" mnemonicParsing="false" onAction="#handleNewGame" text="NEW GAME" />
+        <Button fx:id="btnDeleteGame" mnemonicParsing="false" onAction="#handleDeleteGame" text="DELETE GAME" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnResumeSelected" mnemonicParsing="false" onAction="#handleResumeGame" text="RESUME SELECTED" />
+    </HBox>
+</VBox>
