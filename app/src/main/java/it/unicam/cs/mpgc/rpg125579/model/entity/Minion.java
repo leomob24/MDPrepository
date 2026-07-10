@@ -13,7 +13,7 @@ import java.util.Random;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Minion extends Character {
+public class Minion extends Mostro {
 
     /**
      * Pool di nomi per il Minion da creare
@@ -30,20 +30,19 @@ public class Minion extends Character {
      * @param def Punti difesa assegnati
      * @param hp Punti vita assegnati
      */
-    private Minion(String name, int atk, int def, int hp) {
-        super(name, atk, def, hp, 0);
+    private Minion(String name, int atk, int def, int hp, Superhero owner) {
+        super(name, atk, def, hp, 0, owner);
     }
-
     /**
      * Metodo statico per la creazione di un nuovo Minion Random
      * @return Minion
      */
-    public static Minion generateMinion() {
+    public static Minion generateMinion(Superhero owner) {
         Random random = new Random();
         String name = MINION_NAMES[random.nextInt(MINION_NAMES.length)];
         int atk = random.nextInt(10) + 10;
         int def = random.nextInt(5) + 5;
         int hp = random.nextInt(50) + 20;
-        return new Minion(name, atk, def, hp);
+        return new Minion(name, atk, def, hp, owner);
     }
 }

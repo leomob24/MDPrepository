@@ -8,14 +8,15 @@ import java.util.Random;
 
 /**
  * Entità che rappresenta un antagonista (Villain) nel gioco.
- * Eredita da Character e aggiunge la generazione casuale dei parametri.
+ * Eredita da Character e aggiunge la generazione casuale dei parametri,
+ * oltre al riferimento al {@link Superhero} "proprietario".
  */
 @Entity
 @DiscriminatorValue("VILLAIN")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Villain extends Character {
+public class Villain extends Mostro {
 
     /**
      * Pool di nomi per il Villain da creare
@@ -32,22 +33,22 @@ public class Villain extends Character {
      * @param hp Punti vita assegnati
      * @param def Punti difesa assegnati
      * @param bonusAtk Punti bonus per l'attacco
+     * @param owner Supereroe proprietario del villain
      */
-    private Villain(String name, int atk, int hp, int def, int bonusAtk) {
-        super(name, atk, hp, def, bonusAtk);
+    private Villain(String name, int atk, int hp, int def, int bonusAtk, Superhero owner) {
+        super(name, atk, def, hp, bonusAtk, owner);
     }
-
     /**
      * Metodo statico per la creazione di un nuovo Villain Random
      * @return Villain
      */
-    public static Villain generateVillain() {
+    public static Villain generateVillain(Superhero owner) {
         Random random = new Random();
         String name = VILLAIN_NAMES[random.nextInt(VILLAIN_NAMES.length)];
         int atk = random.nextInt(20) + 30;
         int hp = random.nextInt(100) + 100;
         int def = random.nextInt(10) + 10;
         int bonusAtk = random.nextInt(5) + 1;
-        return new Villain(name, atk, hp, def, bonusAtk);
+        return new Villain(name, atk, hp, def, bonusAtk, owner);
     }
 }
