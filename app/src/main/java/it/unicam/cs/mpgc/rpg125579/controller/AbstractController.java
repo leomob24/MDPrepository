@@ -45,7 +45,7 @@ public abstract class AbstractController<T> implements Controller<T> {
     public void add(T entity) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            session.save(entity);
+            session.persist(entity);
             tx.commit();
         }
     }

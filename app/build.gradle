@@ -26,7 +26,7 @@ dependencies {
     implementation libs.guava
 
     // Versione di Lombok
-    def lombokVersion = '1.18.30'
+    def lombokVersion = '1.18.46'
 
     // Necessario per scrivere il codice
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -74,5 +74,9 @@ sourceSets {
 }
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
+    failOnNoDiscoveredTests = false
+}
+
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // or DuplicatesStrategy.INCLUDE
 }

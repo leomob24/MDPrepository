@@ -24,7 +24,7 @@ public class Minion extends Mostro {
     };
 
     /**
-     * Costruttore per la classe Minion. E' privato perchè l'unico modo per costruire un oggetto Minion è tramite il metodo statico generateMinion().
+     * Costruttore per la classe Minion. È privato perché l'unico modo per costruire un oggetto Minion è tramite il metodo statico generateMinion().
      * @param name Nome assegnato
      * @param atk Punti attacco assegnati
      * @param def Punti difesa assegnati
