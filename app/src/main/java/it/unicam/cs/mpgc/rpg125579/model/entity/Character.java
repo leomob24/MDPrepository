@@ -79,8 +79,7 @@ public abstract class Character {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Character)) return false;
-        Character character = (Character) o;
+        if (!(o instanceof Character character)) return false;
         return id != null && id.equals(character.id);
     }
 }

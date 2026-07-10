@@ -74,7 +74,7 @@ public class MainView {
             return;
         }
 
-        BattleView controller = ViewNavigator.switchTo("/fxml/BattleVIew.fxml", "Battaglia!");
+        BattleView controller = ViewNavigator.switchTo("/BattleVIew.fxml", "Battaglia!");
         controller.initBattle(hero, selected);
     }
 

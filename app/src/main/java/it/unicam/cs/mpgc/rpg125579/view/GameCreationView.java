@@ -66,7 +66,7 @@ public class GameCreationView {
         characterController.add(Minion.generateMinion(hero));
         characterController.add(Minion.generateMinion(hero));
 
-        MainView controller = ViewNavigator.switchTo("/fxml/MainView.fxml", "Superbattles - " + hero.getName());
+        MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + hero.getName());
         controller.initHero(hero);
     }
 

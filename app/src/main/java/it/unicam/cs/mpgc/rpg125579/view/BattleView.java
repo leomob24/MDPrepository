@@ -122,7 +122,7 @@ public class BattleView {
         txtBattleLog.appendText("Sei scappato dalla battaglia!\n");
         persistState();
 
-        MainView controller = ViewNavigator.switchTo("/fxml/MainView.fxml", "Superbattles - " + hero.getName());
+        MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + hero.getName());
         controller.initHero(hero);
     }
 

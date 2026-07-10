@@ -13,7 +13,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         ViewNavigator.setPrimaryStage(stage);
-        ViewNavigator.switchTo("/fxml/DashboardView.fxml", "Superbattles");
+        ViewNavigator.switchTo("/DashboardView.fxml", "Superbattles");
         stage.show();
     }
 

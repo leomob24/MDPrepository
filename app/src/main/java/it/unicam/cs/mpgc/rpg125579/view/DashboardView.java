@@ -72,7 +72,7 @@ public class DashboardView {
 
     @FXML
     void handleNewGame(ActionEvent event) {
-        ViewNavigator.switchTo("/fxml/GameCreationView.fxml", "Create your Superhero");
+        ViewNavigator.switchTo("/GameCreationView.fxml", "Create your Superhero");
     }
 
     @FXML

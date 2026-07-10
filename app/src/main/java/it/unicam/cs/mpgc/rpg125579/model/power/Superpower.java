@@ -91,8 +91,7 @@ public class Superpower implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Superpower)) return false;
-        Superpower that = (Superpower) o;
+        if (!(o instanceof Superpower that)) return false;
         return id != null && id.equals(that.id);
     }
 }
