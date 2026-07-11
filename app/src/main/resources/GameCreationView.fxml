@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -28,5 +29,8 @@
         <ComboBox fx:id="comboSuperpower" prefWidth="150.0" promptText="Choose one..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
     </GridPane>
 
-    <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#handleCreateHero" text="Create" />
+    <HBox spacing="10.0">
+        <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+        <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#handleCreateHero" text="Create" />
+    </HBox>
 </VBox>

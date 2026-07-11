@@ -23,7 +23,7 @@ public class MainView {
     @FXML private TableView<Character> enemyTable;
     @FXML private TableColumn<Character, String> colEnemyName;
     @FXML private TableColumn<Character, Integer> colEnemyAtk, colEnemyDef, colEnemyHp;
-    @FXML private Button btnSfida;
+    @FXML private Button btnSfida, btnBack;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private Superhero hero;
@@ -74,7 +74,7 @@ public class MainView {
             return;
         }
 
-        BattleView controller = ViewNavigator.switchTo("/BattleVIew.fxml", "Battaglia!");
+        BattleView controller = ViewNavigator.switchTo("/BattleView.fxml", "Battaglia!");
         controller.initBattle(hero, selected);
     }
 
@@ -83,5 +83,10 @@ public class MainView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    void handleBack(ActionEvent event) {
+        ViewNavigator.switchTo("/DashboardView.fxml", "Dashboard");
     }
 }

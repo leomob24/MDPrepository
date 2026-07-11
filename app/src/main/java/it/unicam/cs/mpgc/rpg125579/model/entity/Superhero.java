@@ -21,7 +21,7 @@ public class Superhero extends Character implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "superpower_id", referencedColumnName = "id")
     private Superpower superpower;
 

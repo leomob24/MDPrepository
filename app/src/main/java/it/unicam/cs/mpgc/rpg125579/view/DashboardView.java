@@ -102,7 +102,7 @@ public class DashboardView {
             showInfo("Seleziona una partita da riprendere.");
             return;
         }
-        MainView controller = ViewNavigator.switchTo("/fxml/MainView.fxml", "Superbattles - " + selected.getName());
+        MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + selected.getName());
         controller.initHero(selected);
     }
 

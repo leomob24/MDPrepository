@@ -23,6 +23,7 @@ public class SuperpowerCreationView {
     @FXML private TextField txtName, txtDescription, txtHp, txtAtk, txtDef, txtBonusAtk;
     @FXML private ListView<String> listSuperpowers;
     @FXML private Button btnCreatePower;
+    @FXML private Button btnBack;
 
     private final Controller<Superpower> superpowerController = new BasicController<>(Superpower.class);
 
@@ -85,5 +86,10 @@ public class SuperpowerCreationView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    void handleBack(ActionEvent event) {
+        ViewNavigator.switchTo("/DashboardView.fxml", "Dashboard");
     }
 }

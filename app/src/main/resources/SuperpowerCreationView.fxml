@@ -46,6 +46,9 @@
     <VBox spacing="10.0" HBox.hgrow="ALWAYS">
         <Label text="List of superpowers created" />
         <ListView fx:id="listSuperpowers" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-        <Button fx:id="btnCreatePower" mnemonicParsing="false" onAction="#handleCreatePower" text="Create" alignment="CENTER_RIGHT" />
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+            <Button fx:id="btnCreatePower" mnemonicParsing="false" onAction="#handleCreatePower" text="Create" />
+        </HBox>
     </VBox>
 </HBox>

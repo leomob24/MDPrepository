@@ -27,6 +27,7 @@ public class GameCreationView {
     @FXML private TextField txtName;
     @FXML private ComboBox<String> comboSuperpower;
     @FXML private Button btnCreate;
+    @FXML private Button btnBack;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private final Controller<Superpower> superpowerController = new BasicController<>(Superpower.class);
@@ -76,5 +77,10 @@ public class GameCreationView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    void handleBack(ActionEvent event) {
+        ViewNavigator.switchTo("/DashboardView.fxml", "Dashboard");
     }
 }
