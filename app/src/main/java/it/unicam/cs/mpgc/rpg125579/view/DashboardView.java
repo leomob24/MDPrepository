@@ -53,7 +53,7 @@ public class DashboardView {
 
     @FXML
     void handleManageSuperpowers(ActionEvent event) {
-        ViewNavigator.switchTo("/fxml/SuperpowerCreationView.fxml", "Manage Superpowers");
+        ViewNavigator.switchTo("/SuperpowerCreationView.fxml", "Manage Superpowers");
     }
 
     @FXML
