@@ -63,9 +63,9 @@ public class GameCreationView {
         characterController.add(hero);
 
         // Generazione automatica dei nemici della partita, legati all'eroe.
-        characterController.add(Villain.generateVillain(hero));
-        characterController.add(Minion.generateMinion(hero));
-        characterController.add(Minion.generateMinion(hero));
+        characterController.add(Villain.generateVillain(hero,1));
+        characterController.add(Minion.generateMinion(hero,1));
+        characterController.add(Minion.generateMinion(hero,1));
 
         MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + hero.getName());
         controller.initHero(hero);

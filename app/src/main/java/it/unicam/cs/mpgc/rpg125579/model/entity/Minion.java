@@ -39,13 +39,14 @@ public class Minion extends Mostro {
      * Metodo statico per la creazione di un nuovo Minion Random
      * @return Minion
      */
-    public static Minion generateMinion(Superhero owner) {
+    public static Minion generateMinion(Superhero owner, int ondata) {
         Random random = new Random();
         String name = MINION_NAMES[random.nextInt(MINION_NAMES.length)];
-        int atk = random.nextInt(8) + 8;        // 8-15
-        int def = random.nextInt(4) + 4;        // 4-7
-        int hp = random.nextInt(30) + 15;       // 15-44
-        int bonusAtk = random.nextInt(3);       // 0-2
+        int scala = ondata - 1;
+        int atk = random.nextInt(8) + 8 + (scala * 2);
+        int def = random.nextInt(4) + 4 + scala;
+        int hp = random.nextInt(30) + 15 + (scala * 8);
+        int bonusAtk = random.nextInt(3) + scala;
         return new Minion(name, atk, def, hp, bonusAtk, owner);
     }
 }

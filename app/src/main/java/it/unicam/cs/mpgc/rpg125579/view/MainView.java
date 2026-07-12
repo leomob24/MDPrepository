@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Mostro;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
+import it.unicam.cs.mpgc.rpg125579.model.service.GestoreOndate;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,14 +15,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller della MainView: mostra le statistiche dell'eroe e la lista
- * dei nemici associati alla sua partita (tramite {@link Mostro#getOwner()}).
- */
 public class MainView {
 
     @FXML private Label lblHeroName, lblAtk, lblDef, lblHp, lblBonusAtk, lblSuperpowerName, lblSuperpowerDesc;
-    @FXML private Label lblLevel, lblXp;
+    @FXML private Label lblLevel, lblXp, lblOndata;
     @FXML private TableView<Character> enemyTable;
     @FXML private TableColumn<Character, String> colEnemyName;
     @FXML private TableColumn<Character, Integer> colEnemyAtk, colEnemyDef, colEnemyHp;
@@ -29,6 +26,7 @@ public class MainView {
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
+    private final GestoreOndate gestoreOndate = new GestoreOndate();
     private Superhero hero;
 
     @FXML
@@ -39,10 +37,6 @@ public class MainView {
         colEnemyHp.setCellValueFactory(new PropertyValueFactory<>("hpAttuali"));
     }
 
-    /**
-     * Inizializza la view con l'eroe della partita corrente.
-     * Da chiamare subito dopo aver caricato questo FXML (vedi {@link ViewNavigator}).
-     */
     public void initHero(Superhero hero) {
         this.hero = hero;
         refreshHeroLabels();
@@ -59,16 +53,37 @@ public class MainView {
         lblSuperpowerDesc.setText("Description: " + hero.getSuperpower().getDescription());
         lblLevel.setText("Livello: " + hero.getLivello());
         lblXp.setText("XP: " + hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()));
+        lblOndata.setText("Ondata: " + hero.getOndataAttuale());
     }
 
+    /**
+     * Aggiorna la tabella dei nemici vivi. Se l'ondata corrente è stata
+     * completamente sconfitta, ne genera automaticamente una nuova, più
+     * difficile, prima di mostrare la tabella.
+     */
     private void refreshEnemyTable() {
-        List<Character> enemies = characterController.getAll().stream()
+        List<Character> enemiesVivi = getNemiciViviDelloHero();
+
+        if (enemiesVivi.isEmpty()) {
+            List<Mostro> nuovaOndata = gestoreOndate.generaProssimaOndata(hero);
+            nuovaOndata.forEach(characterController::add);
+            characterController.update(hero);
+            refreshHeroLabels();
+
+            showInfo("Hai sconfitto tutti i nemici! Inizia l'ondata " + hero.getOndataAttuale() + ".");
+            enemiesVivi = getNemiciViviDelloHero();
+        }
+
+        enemyTable.setItems(FXCollections.observableArrayList(enemiesVivi));
+    }
+
+    private List<Character> getNemiciViviDelloHero() {
+        return characterController.getAll().stream()
                 .filter(c -> c instanceof Mostro)
                 .map(c -> (Mostro) c)
                 .filter(m -> hero.equals(m.getOwner()) && m.getHpAttuali() > 0)
                 .map(m -> (Character) m)
                 .collect(Collectors.toList());
-        enemyTable.setItems(FXCollections.observableArrayList(enemies));
     }
 
     @FXML

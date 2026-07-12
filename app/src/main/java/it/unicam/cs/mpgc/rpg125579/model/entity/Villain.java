@@ -42,13 +42,14 @@ public class Villain extends Mostro {
      * Metodo statico per la creazione di un nuovo Villain Random
      * @return Villain
      */
-    public static Villain generateVillain(Superhero owner) {
+    public static Villain generateVillain(Superhero owner, int ondata) {
         Random random = new Random();
         String name = VILLAIN_NAMES[random.nextInt(VILLAIN_NAMES.length)];
-        int atk = random.nextInt(15) + 20;      // 20-34
-        int hp = random.nextInt(60) + 80;       // 80-139
-        int def = random.nextInt(8) + 8;        // 8-15
-        int bonusAtk = random.nextInt(4) + 2;   // 2-5
+        int scala = ondata - 1; // ondata 1 = nessuno scaling aggiuntivo
+        int atk = random.nextInt(15) + 20 + (scala * 4);
+        int hp = random.nextInt(60) + 80 + (scala * 20);
+        int def = random.nextInt(8) + 8 + (scala * 2);
+        int bonusAtk = random.nextInt(4) + 2 + scala;
         return new Villain(name, atk, hp, def, bonusAtk, owner);
     }
 }
