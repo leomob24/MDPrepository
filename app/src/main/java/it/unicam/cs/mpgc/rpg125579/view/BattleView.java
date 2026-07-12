@@ -4,14 +4,21 @@ import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
-import it.unicam.cs.mpgc.rpg125579.model.service.GestoreCombattimento;
-import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
+import it.unicam.cs.mpgc.rpg125579.model.service.Battaglia;
+import it.unicam.cs.mpgc.rpg125579.model.service.RisultatoAttacco;
+import it.unicam.cs.mpgc.rpg125579.model.service.RisultatoCura;
+import it.unicam.cs.mpgc.rpg125579.model.service.RisultatoVittoria;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
+/**
+ * Controller della schermata di battaglia. Delega tutta la logica di
+ * combattimento a {@link Battaglia}: si occupa solo di tradurre gli eventi
+ * dei bottoni in chiamate al dominio, aggiornare le label e scrivere il log.
+ */
 public class BattleView {
 
     @FXML private Label lblHeroName;
@@ -31,36 +38,24 @@ public class BattleView {
     @FXML private TextArea txtBattleLog;
     @FXML private Button btnAtk, btnDef, btnCura, btnScappa;
 
-    private final GestoreCombattimento gestoreCombattimento = new GestoreCombattimento();
-    private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private final Controller<Partita> partitaController = new BasicController<>(Partita.class);
 
     private Partita partita;
+    private Battaglia battaglia;
     private Superhero hero;
     private Character enemy;
-
-    private static final int HEAL_AMOUNT = 8;
-    private static final int HEAL_COOLDOWN_TURNS = 3;
-    private static final int MAX_CURE_PER_BATTLE = 3;
-    private static final double DEFEND_BONUS_MULTIPLIER = 1.5;
-
-    private int turnsSinceHeal = HEAL_COOLDOWN_TURNS;
-    private int cureUsate = 0;
-    private boolean battleOver = false;
 
     public void initBattle(Partita partita, Character enemy) {
         this.partita = partita;
         this.hero = partita.getSuperhero();
         this.enemy = enemy;
-        this.battleOver = false;
-        this.turnsSinceHeal = HEAL_COOLDOWN_TURNS;
-        this.cureUsate = 0;
+        this.battaglia = new Battaglia(hero, enemy);
 
         refreshLabels();
+        refreshCuraInfo();
         txtBattleLog.clear();
         txtBattleLog.appendText("La battaglia ha inizio: " + hero.getName() + " contro " + enemy.getName() + "!\n");
-        updateHealButtonAvailability();
     }
 
     private void refreshLabels() {
@@ -69,7 +64,7 @@ public class BattleView {
         lblHeroAtk.setText(String.valueOf(hero.getAtk()));
         lblHeroDef.setText(String.valueOf(hero.getDef()));
         lblHeroLevel.setText("Lv. " + hero.getLivello());
-        lblHeroXp.setText(hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()) + " XP");
+        lblHeroXp.setText(hero.getEsperienza() + "/" + battaglia.esperienzaRichiesta() + " XP");
 
         lblEnemyName.setText(enemy.getName());
         lblEnemyHp.setText(enemy.getHpAttuali() + "/" + enemy.getHp());
@@ -77,59 +72,56 @@ public class BattleView {
         lblEnemyDef.setText(String.valueOf(enemy.getDef()));
     }
 
+    private void refreshCuraInfo() {
+        lblCuraInfo.setText("Cura: +" + battaglia.getHealAmount() + " HP — "
+                + battaglia.getCureRimaste() + "/" + battaglia.getMaxCurePerBattle() + " rimaste");
+        btnCura.setDisable(!battaglia.isCuraDisponibile());
+    }
+
     @FXML
     void handleAttack(ActionEvent event) {
-        if (battleOver) return;
+        if (battaglia.isTerminata()) return;
 
-        gestoreCombattimento.eseguiAttacco(hero, enemy);
+        RisultatoAttacco esito = battaglia.eseguiAttacco();
         txtBattleLog.appendText(hero.getName() + " attacca! " + enemy.getName()
                 + " scende a " + enemy.getHpAttuali() + " HP.\n");
+        lblEnemyHp.setText(enemy.getHpAttuali() + "/" + enemy.getHp());
 
-        if (checkEnemyDefeated()) return;
+        if (esito.nemicoSconfitto()) {
+            gestisciVittoria();
+            return;
+        }
 
-        eseguiTurnoNemico();
+        registraContrattacco(esito.eroeSconfitto());
     }
 
     @FXML
     void handleDefend(ActionEvent event) {
-        if (battleOver) return;
+        if (battaglia.isTerminata()) return;
 
-        int defOriginale = hero.getDef();
-        hero.setDef((int) Math.round(defOriginale * DEFEND_BONUS_MULTIPLIER));
         txtBattleLog.appendText("Ti stai difendendo! Difesa aumentata per questo turno.\n");
+        RisultatoAttacco esito = battaglia.eseguiDifesa();
 
-        eseguiTurnoNemico();
-
-        hero.setDef(defOriginale);
-        lblHeroDef.setText(String.valueOf(hero.getDef()));
+        registraContrattacco(esito.eroeSconfitto());
     }
 
     @FXML
     void handleHeal(ActionEvent event) {
-        if (battleOver) return;
+        if (battaglia.isTerminata()) return;
 
-        if (cureUsate >= MAX_CURE_PER_BATTLE) {
-            txtBattleLog.appendText("Hai già usato tutte le cure disponibili per questo combattimento.\n");
-            return;
-        }
-        if (turnsSinceHeal < HEAL_COOLDOWN_TURNS) {
-            txtBattleLog.appendText("Cura non ancora disponibile.\n");
+        RisultatoCura esito = battaglia.eseguiCura();
+        if (!esito.eseguita()) {
+            txtBattleLog.appendText(esito.motivoRifiuto() + "\n");
             return;
         }
 
-        int nuoviHp = Math.min(hero.getHpAttuali() + (HEAL_AMOUNT*hero.getHp()/100), hero.getHp());
-        int recuperati = nuoviHp - hero.getHpAttuali();
-        hero.setHpAttuali(nuoviHp);
-        turnsSinceHeal = 0;
-        cureUsate++;
-
-        txtBattleLog.appendText("Hai usato Cura! Hai recuperato " + recuperati + " HP ("
+        txtBattleLog.appendText("Hai usato Cura! Hai recuperato " + esito.hpRecuperati() + " HP ("
                 + hero.getHpAttuali() + "/" + hero.getHp() + "). Cure rimaste: "
-                + (MAX_CURE_PER_BATTLE - cureUsate) + "/" + MAX_CURE_PER_BATTLE + ".\n");
+                + esito.cureRimaste() + "/" + battaglia.getMaxCurePerBattle() + ".\n");
         lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
-        updateHealButtonAvailability();
+        refreshCuraInfo();
 
-        eseguiTurnoNemico();
+        registraContrattacco(esito.eroeSconfitto());
     }
 
     @FXML
@@ -141,55 +133,37 @@ public class BattleView {
         controller.initPartita(partita);
     }
 
-    private void eseguiTurnoNemico() {
-        turnsSinceHeal++;
-        updateHealButtonAvailability();
-
-        gestoreCombattimento.eseguiAttacco(enemy, hero);
+    /**
+     * Scrive nel log l'esito del contrattacco del nemico (comune ad attacco,
+     * difesa e cura) e conclude la battaglia se l'eroe è stato sconfitto.
+     */
+    private void registraContrattacco(boolean eroeSconfitto) {
         txtBattleLog.appendText(enemy.getName() + " contrattacca! " + hero.getName()
                 + " scende a " + hero.getHpAttuali() + " HP.\n");
         lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
+        refreshCuraInfo();
 
-        checkHeroDefeated();
-    }
-
-    private boolean checkEnemyDefeated() {
-        lblEnemyHp.setText(enemy.getHpAttuali() + "/" + enemy.getHp());
-        if (enemy.getHpAttuali() <= 0) {
-            txtBattleLog.appendText("\n🏆 Hai sconfitto " + enemy.getName() + "!\n");
-            assegnaEsperienzaESegnala();
-            endBattle();
-            return true;
-        }
-        return false;
-    }
-
-    private void assegnaEsperienzaESegnala() {
-        int xpOttenuta = gestoreLivelli.calcolaEsperienzaOttenuta(enemy);
-        int livelliGuadagnati = gestoreLivelli.assegnaEsperienza(hero, xpOttenuta);
-
-        txtBattleLog.appendText("Hai guadagnato " + xpOttenuta + " punti esperienza!\n");
-        if (livelliGuadagnati > 0) {
-            txtBattleLog.appendText("⭐ LEVEL UP! Ora sei livello " + hero.getLivello()
-                    + " (" + (livelliGuadagnati > 1 ? livelliGuadagnati + " livelli guadagnati, " : "")
-                    + "statistiche massime aumentate)!\n");
-        }
-        lblHeroLevel.setText("Lv. " + hero.getLivello());
-        lblHeroXp.setText(hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()) + " XP");
-        lblHeroAtk.setText(String.valueOf(hero.getAtk()));
-        lblHeroDef.setText(String.valueOf(hero.getDef()));
-        lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
-    }
-
-    private void checkHeroDefeated() {
-        if (hero.getHpAttuali() <= 0) {
+        if (eroeSconfitto) {
             txtBattleLog.appendText("\n💀 Sei stato sconfitto da " + enemy.getName() + "...\n");
             endBattle();
         }
     }
 
+    private void gestisciVittoria() {
+        txtBattleLog.appendText("\n🏆 Hai sconfitto " + enemy.getName() + "!\n");
+
+        RisultatoVittoria vittoria = battaglia.assegnaEsperienzaVittoria();
+        txtBattleLog.appendText("Hai guadagnato " + vittoria.xpOttenuta() + " punti esperienza!\n");
+        if (vittoria.livelliGuadagnati() > 0) {
+            txtBattleLog.appendText("⭐ LEVEL UP! Ora sei livello " + hero.getLivello()
+                    + " (" + (vittoria.livelliGuadagnati() > 1 ? vittoria.livelliGuadagnati() + " livelli guadagnati, " : "")
+                    + "statistiche massime aumentate)!\n");
+        }
+        refreshLabels();
+        endBattle();
+    }
+
     private void endBattle() {
-        battleOver = true;
         btnAtk.setDisable(true);
         btnDef.setDisable(true);
         btnCura.setDisable(true);
@@ -206,18 +180,5 @@ public class BattleView {
         }
         partita.aggiornaSalvataggio();
         partitaController.update(partita);
-    }
-
-    /**
-     * Aggiorna sia la disponibilità del bottone Cura (cooldown + tetto massimo)
-     * sia la label informativa che mostra quanto si curerà e quante cure restano.
-     */
-    private void updateHealButtonAvailability() {
-        boolean cooldownOk = turnsSinceHeal >= HEAL_COOLDOWN_TURNS;
-        boolean cureResidue = cureUsate < MAX_CURE_PER_BATTLE;
-        btnCura.setDisable(!cooldownOk || !cureResidue || battleOver);
-
-        lblCuraInfo.setText("Cura: +" + (HEAL_AMOUNT*hero.getHp()/100) + " HP — "
-                + (MAX_CURE_PER_BATTLE - cureUsate) + "/" + MAX_CURE_PER_BATTLE + " rimaste");
     }
 }
