@@ -7,10 +7,6 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Entità che rappresenta un Eroe dotato di un superpotere.
- * Eredita da Character e aggiunge la possibilità di possedere un Superpower.
- */
 @Entity
 @DiscriminatorValue("SUPERHERO")
 @Getter
@@ -26,15 +22,20 @@ public class Superhero extends Character implements Serializable {
     private Superpower superpower;
 
     /**
-     * Costruttore per Superhero
-     *
-     * @param name Nome del supereroe
-     * @param superpower Il superpotere associato
-     * @throws IllegalArgumentException se il superpotere è null
+     * Livello attuale dell'eroe. Parte da 1 e cresce sconfiggendo nemici.
      */
+    private int livello;
+
+    /**
+     * Punti esperienza accumulati nel livello corrente.
+     */
+    private int esperienza;
+
     public Superhero(String name, Superpower superpower) {
         super(name, validate(superpower).getAtk(), superpower.getDef(), superpower.getHp(), superpower.getBonusAtk());
         this.superpower = superpower;
+        this.livello = 1;
+        this.esperienza = 0;
     }
 
     private static Superpower validate(Superpower superpower) {

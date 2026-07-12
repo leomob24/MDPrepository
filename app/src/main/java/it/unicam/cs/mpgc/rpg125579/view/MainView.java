@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Mostro;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
+import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,12 +21,14 @@ import java.util.stream.Collectors;
 public class MainView {
 
     @FXML private Label lblHeroName, lblAtk, lblDef, lblHp, lblBonusAtk, lblSuperpowerName, lblSuperpowerDesc;
+    @FXML private Label lblLevel, lblXp;
     @FXML private TableView<Character> enemyTable;
     @FXML private TableColumn<Character, String> colEnemyName;
     @FXML private TableColumn<Character, Integer> colEnemyAtk, colEnemyDef, colEnemyHp;
     @FXML private Button btnSfida, btnBack;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
+    private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
     private Superhero hero;
 
     @FXML
@@ -54,6 +57,8 @@ public class MainView {
         lblBonusAtk.setText("Bonus ATK: " + hero.getBonusAtk());
         lblSuperpowerName.setText("Superpower: " + hero.getSuperpower().getPowerName());
         lblSuperpowerDesc.setText("Description: " + hero.getSuperpower().getDescription());
+        lblLevel.setText("Livello: " + hero.getLivello());
+        lblXp.setText("XP: " + hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()));
     }
 
     private void refreshEnemyTable() {

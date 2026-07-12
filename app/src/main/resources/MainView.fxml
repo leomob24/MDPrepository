@@ -27,6 +27,8 @@
         <Label fx:id="lblBonusAtk" text="Bonus ATK: ---" />
         <Label fx:id="lblSuperpowerName" text="Superpower: ---" />
         <Label fx:id="lblSuperpowerDesc" text="Description: ---" wrapText="true" />
+        <Label fx:id="lblLevel" text="Livello: ---" />
+        <Label fx:id="lblXp" text="XP: ---" />
         <HBox spacing="10.0">
             <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
             <Button fx:id="btnSfida" mnemonicParsing="false" onAction="#handleChallengeEnemy" text="SFIDA" />

@@ -2,7 +2,8 @@ package it.unicam.cs.mpgc.rpg125579.view;
 
 import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
-import it.unicam.cs.mpgc.rpg125579.model.entity.GestoreCombattimento;
+import it.unicam.cs.mpgc.rpg125579.model.service.GestoreCombattimento;
+import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,18 +11,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
-/**
- * Controller della battaglia: il giocatore sceglie un'azione ogni turno
- * (Attacca, Difendi, Cura, Scappa). Ogni calcolo di danno passa da
- * {@link GestoreCombattimento} — questa classe si limita a orchestrare
- * il turno e aggiornare la UI, senza calcolare nulla direttamente.
- */
 public class BattleView {
 
     @FXML private Label lblHeroName;
     @FXML private Label lblHeroHp;
     @FXML private Label lblHeroAtk;
     @FXML private Label lblHeroDef;
+    @FXML private Label lblHeroLevel;
+    @FXML private Label lblHeroXp;
 
     @FXML private Label lblEnemyName;
     @FXML private Label lblEnemyHp;
@@ -31,7 +28,8 @@ public class BattleView {
     @FXML private TextArea txtBattleLog;
     @FXML private Button btnAtk, btnDef, btnCura, btnScappa;
 
-    private final GestoreCombattimento gestore = new GestoreCombattimento();
+    private final GestoreCombattimento gestoreCombattimento = new GestoreCombattimento();
+    private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private Superhero hero;
     private Character enemy;
@@ -40,12 +38,9 @@ public class BattleView {
     private static final int HEAL_COOLDOWN_TURNS = 3;
     private static final double DEFEND_BONUS_MULTIPLIER = 1.5;
 
-    private int turnsSinceHeal = HEAL_COOLDOWN_TURNS; // curabile fin da subito
+    private int turnsSinceHeal = HEAL_COOLDOWN_TURNS;
     private boolean battleOver = false;
 
-    /**
-     * Inizializza la battaglia. Da chiamare subito dopo aver caricato questo FXML.
-     */
     public void initBattle(Superhero hero, Character enemy) {
         this.hero = hero;
         this.enemy = enemy;
@@ -63,6 +58,8 @@ public class BattleView {
         lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
         lblHeroAtk.setText(String.valueOf(hero.getAtk()));
         lblHeroDef.setText(String.valueOf(hero.getDef()));
+        lblHeroLevel.setText("Lv. " + hero.getLivello());
+        lblHeroXp.setText(hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()) + " XP");
 
         lblEnemyName.setText(enemy.getName());
         lblEnemyHp.setText(enemy.getHpAttuali() + "/" + enemy.getHp());
@@ -74,7 +71,7 @@ public class BattleView {
     void handleAttack(ActionEvent event) {
         if (battleOver) return;
 
-        gestore.eseguiAttacco(hero, enemy);
+        gestoreCombattimento.eseguiAttacco(hero, enemy);
         txtBattleLog.appendText(hero.getName() + " attacca! " + enemy.getName()
                 + " scende a " + enemy.getHpAttuali() + " HP.\n");
 
@@ -87,8 +84,6 @@ public class BattleView {
     void handleDefend(ActionEvent event) {
         if (battleOver) return;
 
-        // Bonus difesa temporaneo solo per l'attacco nemico di questo turno:
-        // alziamo def, eseguiamo l'attacco nemico, poi ripristiniamo il valore originale.
         int defOriginale = hero.getDef();
         hero.setDef((int) Math.round(defOriginale * DEFEND_BONUS_MULTIPLIER));
         txtBattleLog.appendText("Ti stai difendendo! Difesa aumentata per questo turno.\n");
@@ -126,15 +121,11 @@ public class BattleView {
         controller.initHero(hero);
     }
 
-    /**
-     * Esegue il turno del nemico, se ancora vivo, e verifica lo stato di fine battaglia.
-     * Incrementa anche il contatore per il cooldown di Cura.
-     */
     private void eseguiTurnoNemico() {
         turnsSinceHeal++;
         updateHealButtonAvailability();
 
-        gestore.eseguiAttacco(enemy, hero);
+        gestoreCombattimento.eseguiAttacco(enemy, hero);
         txtBattleLog.appendText(enemy.getName() + " contrattacca! " + hero.getName()
                 + " scende a " + hero.getHpAttuali() + " HP.\n");
         lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
@@ -146,10 +137,32 @@ public class BattleView {
         lblEnemyHp.setText(enemy.getHpAttuali() + "/" + enemy.getHp());
         if (enemy.getHpAttuali() <= 0) {
             txtBattleLog.appendText("\n🏆 Hai sconfitto " + enemy.getName() + "!\n");
+            assegnaEsperienzaESegnala();
             endBattle();
             return true;
         }
         return false;
+    }
+
+    /**
+     * Calcola e assegna l'XP guadagnata dalla vittoria, aggiornando il log
+     * e le label se l'eroe è salito di livello (anche più volte).
+     */
+    private void assegnaEsperienzaESegnala() {
+        int xpOttenuta = gestoreLivelli.calcolaEsperienzaOttenuta(enemy);
+        int livelliGuadagnati = gestoreLivelli.assegnaEsperienza(hero, xpOttenuta);
+
+        txtBattleLog.appendText("Hai guadagnato " + xpOttenuta + " punti esperienza!\n");
+        if (livelliGuadagnati > 0) {
+            txtBattleLog.appendText("⭐ LEVEL UP! Ora sei livello " + hero.getLivello()
+                    + " (" + (livelliGuadagnati > 1 ? livelliGuadagnati + " livelli guadagnati, " : "")
+                    + "statistiche aumentate, HP ripristinati)!\n");
+        }
+        lblHeroLevel.setText("Lv. " + hero.getLivello());
+        lblHeroXp.setText(hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()) + " XP");
+        lblHeroAtk.setText(String.valueOf(hero.getAtk()));
+        lblHeroDef.setText(String.valueOf(hero.getDef()));
+        lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
     }
 
     private void checkHeroDefeated() {
@@ -168,10 +181,6 @@ public class BattleView {
         persistState();
     }
 
-    /**
-     * Salva lo stato aggiornato di eroe e nemico. Se il nemico è stato
-     * sconfitto (HP a 0), lo rimuove dal database: non serve più.
-     */
     private void persistState() {
         characterController.update(hero);
         if (enemy.getHpAttuali() <= 0) {

@@ -36,6 +36,12 @@
 
                 <Label text="DEF:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                 <Label fx:id="lblHeroDef" text="---" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="Livello:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <Label fx:id="lblHeroLevel" text="Lv. 1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                <Label text="XP:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                <Label fx:id="lblHeroXp" text="0/0 XP" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             </GridPane>
         </VBox>
 
