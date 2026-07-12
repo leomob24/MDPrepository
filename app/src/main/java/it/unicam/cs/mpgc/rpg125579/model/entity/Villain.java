@@ -6,11 +6,6 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import java.util.Random;
 
-/**
- * Entità che rappresenta un antagonista (Villain) nel gioco.
- * Eredita da Character e aggiunge la generazione casuale dei parametri,
- * oltre al riferimento al {@link Superhero} "proprietario".
- */
 @Entity
 @DiscriminatorValue("VILLAIN")
 @Getter
@@ -18,38 +13,27 @@ import java.util.Random;
 @NoArgsConstructor
 public class Villain extends Mostro {
 
-    /**
-     * Pool di nomi per il Villain da creare
-     */
     private static final String[] VILLAIN_NAMES = {
             "Doctor Bad Mood", "Galactose Intolerant", "Doc Hawk", "Low-Key",
             "Choko Kraven", "Rhinoplasty", "K.O.M.O.D.O.", "Bronze Skater"
     };
 
-    /**
-     * Costruttore per la classe villain. E' privato perchè l'unico modo per costruire un oggetto Villain è tramite il metodo statico generateVillain().
-     * @param name Nome assegnato
-     * @param atk Punti attacco assegnati
-     * @param hp Punti vita assegnati
-     * @param def Punti difesa assegnati
-     * @param bonusAtk Punti bonus per l'attacco
-     * @param owner Supereroe proprietario del villain
-     */
-    private Villain(String name, int atk, int hp, int def, int bonusAtk, Superhero owner) {
+    private Villain(String name, int atk, int hp, int def, int bonusAtk, Partita owner) {
         super(name, atk, def, hp, bonusAtk, owner);
     }
+
     /**
-     * Metodo statico per la creazione di un nuovo Villain Random
-     * @return Villain
+     * Genera un Villain scalato in base all'ondata attuale della partita:
+     * più ondate ha superato l'eroe, più il Villain sarà forte.
      */
-    public static Villain generateVillain(Superhero owner, int ondata) {
+    public static Villain generateVillain(Partita partita) {
         Random random = new Random();
         String name = VILLAIN_NAMES[random.nextInt(VILLAIN_NAMES.length)];
-        int scala = ondata - 1; // ondata 1 = nessuno scaling aggiuntivo
+        int scala = partita.getOndataAttuale() - 1;
         int atk = random.nextInt(15) + 20 + (scala * 4);
         int hp = random.nextInt(60) + 80 + (scala * 20);
         int def = random.nextInt(8) + 8 + (scala * 2);
         int bonusAtk = random.nextInt(4) + 2 + scala;
-        return new Villain(name, atk, hp, def, bonusAtk, owner);
+        return new Villain(name, atk, hp, def, bonusAtk, partita);
     }
 }

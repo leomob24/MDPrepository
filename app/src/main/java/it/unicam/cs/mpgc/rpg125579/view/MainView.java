@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg125579.view;
 import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Mostro;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreOndate;
@@ -25,8 +26,11 @@ public class MainView {
     @FXML private Button btnSfida, btnBack;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
+    private final Controller<Partita> partitaController = new BasicController<>(Partita.class);
     private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
     private final GestoreOndate gestoreOndate = new GestoreOndate();
+
+    private Partita partita;
     private Superhero hero;
 
     @FXML
@@ -37,8 +41,13 @@ public class MainView {
         colEnemyHp.setCellValueFactory(new PropertyValueFactory<>("hpAttuali"));
     }
 
-    public void initHero(Superhero hero) {
-        this.hero = hero;
+    /**
+     * Inizializza la view con la partita corrente. Da chiamare subito dopo
+     * aver caricato questo FXML (vedi {@link ViewNavigator}).
+     */
+    public void initPartita(Partita partita) {
+        this.partita = partita;
+        this.hero = partita.getSuperhero();
         refreshHeroLabels();
         refreshEnemyTable();
     }
@@ -53,7 +62,7 @@ public class MainView {
         lblSuperpowerDesc.setText("Description: " + hero.getSuperpower().getDescription());
         lblLevel.setText("Livello: " + hero.getLivello());
         lblXp.setText("XP: " + hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()));
-        lblOndata.setText("Ondata: " + hero.getOndataAttuale());
+        lblOndata.setText("Ondata: " + partita.getOndataAttuale());
     }
 
     /**
@@ -62,26 +71,29 @@ public class MainView {
      * difficile, prima di mostrare la tabella.
      */
     private void refreshEnemyTable() {
-        List<Character> enemiesVivi = getNemiciViviDelloHero();
+        List<Character> nemiciVivi = getNemiciViviDellaPartita();
 
-        if (enemiesVivi.isEmpty()) {
-            List<Mostro> nuovaOndata = gestoreOndate.generaProssimaOndata(hero);
-            nuovaOndata.forEach(characterController::add);
-            characterController.update(hero);
+        if (nemiciVivi.isEmpty()) {
+            gestoreOndate.generaProssimaOndata(partita).forEach(characterController::add);
+            partita.aggiornaSalvataggio();
+            partitaController.update(partita);
             refreshHeroLabels();
 
-            showInfo("Hai sconfitto tutti i nemici! Inizia l'ondata " + hero.getOndataAttuale() + ".");
-            enemiesVivi = getNemiciViviDelloHero();
+            showInfo("Hai sconfitto tutti i nemici! Inizia l'ondata " + partita.getOndataAttuale() + ".");
+            nemiciVivi = getNemiciViviDellaPartita();
         }
 
-        enemyTable.setItems(FXCollections.observableArrayList(enemiesVivi));
+        enemyTable.setItems(FXCollections.observableArrayList(nemiciVivi));
     }
 
-    private List<Character> getNemiciViviDelloHero() {
+    private List<Character> getNemiciViviDellaPartita() {
+        Long partitaId = partita.getId();
         return characterController.getAll().stream()
                 .filter(c -> c instanceof Mostro)
                 .map(c -> (Mostro) c)
-                .filter(m -> hero.equals(m.getOwner()) && m.getHpAttuali() > 0)
+                .filter(m -> m.getOwner() != null
+                        && partitaId.equals(m.getOwner().getId())
+                        && m.getHpAttuali() > 0)
                 .map(m -> (Character) m)
                 .collect(Collectors.toList());
     }
@@ -95,7 +107,7 @@ public class MainView {
         }
 
         BattleView controller = ViewNavigator.switchTo("/BattleView.fxml", "Battaglia!");
-        controller.initBattle(hero, selected);
+        controller.initBattle(partita, selected);
     }
 
     private void showInfo(String message) {

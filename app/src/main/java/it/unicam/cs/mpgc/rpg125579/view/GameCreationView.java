@@ -1,10 +1,11 @@
 package it.unicam.cs.mpgc.rpg125579.view;
 
 import it.unicam.cs.mpgc.rpg125579.controller.*;
-import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Minion;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Villain;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.power.Superpower;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,11 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller per la creazione di un nuovo Superhero. Alla conferma,
- * genera automaticamente i nemici della partita (1 Villain + 2 Minion),
- * tutti legati al nuovo eroe tramite il campo owner di {@link it.unicam.cs.mpgc.rpg125579.model.entity.Mostro}.
- */
 public class GameCreationView {
 
     @FXML private TextField txtName;
@@ -31,6 +27,7 @@ public class GameCreationView {
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
     private final Controller<Superpower> superpowerController = new BasicController<>(Superpower.class);
+    private final Controller<Partita> partitaController = new BasicController<>(Partita.class);
 
     private final Map<String, Superpower> superpowersByName = new HashMap<>();
 
@@ -60,15 +57,17 @@ public class GameCreationView {
 
         Superpower superpower = superpowersByName.get(powerName);
         Superhero hero = new Superhero(name.trim(), superpower);
-        characterController.add(hero);
 
-        // Generazione automatica dei nemici della partita, legati all'eroe.
-        characterController.add(Villain.generateVillain(hero,1));
-        characterController.add(Minion.generateMinion(hero,1));
-        characterController.add(Minion.generateMinion(hero,1));
+        // Cascade ALL su Partita.superhero: persiste anche l'eroe automaticamente.
+        Partita partita = new Partita(hero);
+        partitaController.add(partita);
+
+        characterController.add(Villain.generateVillain(partita));
+        characterController.add(Minion.generateMinion(partita));
+        characterController.add(Minion.generateMinion(partita));
 
         MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + hero.getName());
-        controller.initHero(hero);
+        controller.initPartita(partita);
     }
 
     private void showError(String message) {

@@ -31,14 +31,12 @@ public class Superhero extends Character implements Serializable {
      */
     private int esperienza;
 
-    private int ondataAttuale;
 
     public Superhero(String name, Superpower superpower) {
         super(name, validate(superpower).getAtk(), superpower.getDef(), superpower.getHp(), superpower.getBonusAtk());
         this.superpower = superpower;
         this.livello = 1;
         this.esperienza = 0;
-        this.ondataAttuale = 1;
     }
 
     private static Superpower validate(Superpower superpower) {

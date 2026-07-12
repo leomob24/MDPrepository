@@ -1,54 +1,53 @@
 package it.unicam.cs.mpgc.rpg125579.view;
 
-import it.unicam.cs.mpgc.rpg125579.controller.BasicController;
 import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Mostro;
-import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * Controller della Dashboard: mostra tutti i Superhero esistenti come
- * "Recent Games" e permette di crearne uno nuovo, eliminarlo o riprenderlo.
- */
 public class DashboardView {
 
-    @FXML private TableView<Superhero> gamesTable;
-    @FXML private TableColumn<Superhero, String> colSuperName;
-    @FXML private TableColumn<Superhero, Integer> colHp;
-    @FXML private TableColumn<Superhero, String> colSuperpower;
-    @FXML private TableColumn<Superhero, Integer> colAtk;
-    @FXML private TableColumn<Superhero, Integer> colDef;
-    @FXML private TableColumn<Superhero, Integer> colBonus;
+    @FXML private TableView<Partita> gamesTable;
+    @FXML private TableColumn<Partita, String> colSuperName;
+    @FXML private TableColumn<Partita, Number> colHp;
+    @FXML private TableColumn<Partita, String> colSuperpower;
+    @FXML private TableColumn<Partita, Number> colAtk;
+    @FXML private TableColumn<Partita, Number> colDef;
+    @FXML private TableColumn<Partita, Number> colBonus;
     @FXML private Button btnSuperpowers, btnRules, btnNewGame, btnDeleteGame, btnResumeSelected;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
+    private final Controller<Partita> partitaController = new BasicController<>(Partita.class);
+
     @FXML
     public void initialize() {
-        colSuperName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colHp.setCellValueFactory(new PropertyValueFactory<>("hpAttuali"));
+        colSuperName.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getSuperhero().getName()));
+        colHp.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getSuperhero().getHpAttuali()));
         colSuperpower.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getSuperpower().getPowerName()));
-        colAtk.setCellValueFactory(new PropertyValueFactory<>("atk"));
-        colDef.setCellValueFactory(new PropertyValueFactory<>("def"));
-        colBonus.setCellValueFactory(new PropertyValueFactory<>("bonusAtk"));
+                new SimpleStringProperty(data.getValue().getSuperhero().getSuperpower().getPowerName()));
+        colAtk.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getSuperhero().getAtk()));
+        colDef.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getSuperhero().getDef()));
+        colBonus.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getSuperhero().getBonusAtk()));
 
         refreshGamesTable();
     }
 
     private void refreshGamesTable() {
-        List<Superhero> heroes = characterController.getAll().stream()
-                .filter(c -> c instanceof Superhero)
-                .map(c -> (Superhero) c)
-                .collect(Collectors.toList());
-        gamesTable.setItems(FXCollections.observableArrayList(heroes));
+        List<Partita> partite = partitaController.getAll();
+        gamesTable.setItems(FXCollections.observableArrayList(partite));
     }
 
     @FXML
@@ -66,6 +65,7 @@ public class DashboardView {
                 2. Alla creazione, il gioco genera automaticamente i nemici (Villain + Minion).
                 3. Sfida un nemico dalla lista per iniziare la battaglia.
                 4. In battaglia scegli ogni turno: Attacca, Difendi, Cura o Scappa.
+                5. Sconfiggi tutti i nemici di un'ondata per affrontarne una nuova, più difficile.
                 """);
         alert.showAndWait();
     }
@@ -77,33 +77,35 @@ public class DashboardView {
 
     @FXML
     void handleDeleteGame(ActionEvent event) {
-        Superhero selected = gamesTable.getSelectionModel().getSelectedItem();
+        Partita selected = gamesTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showInfo("Seleziona una partita da eliminare.");
             return;
         }
 
-        // Elimina anche tutti i nemici (Mostro) di proprietà di questo eroe,
-        // altrimenti resterebbero "orfani" nel database.
+        // Elimina i nemici (Mostro) di proprietà di questa partita, altrimenti
+        // resterebbero "orfani" nel database.
         characterController.getAll().stream()
                 .filter(c -> c instanceof Mostro)
                 .map(c -> (Mostro) c)
-                .filter(m -> selected.equals(m.getOwner()))
+                .filter(m -> m.getOwner() != null && selected.getId().equals(m.getOwner().getId()))
                 .forEach(m -> characterController.remove(m.getId()));
 
-        characterController.remove(selected.getId());
+        // Cascade ALL + orphanRemoval: elimina anche il Superhero associato.
+        partitaController.remove(selected.getId());
         refreshGamesTable();
     }
 
     @FXML
     void handleResumeGame(ActionEvent event) {
-        Superhero selected = gamesTable.getSelectionModel().getSelectedItem();
+        Partita selected = gamesTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showInfo("Seleziona una partita da riprendere.");
             return;
         }
-        MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + selected.getName());
-        controller.initHero(selected);
+        MainView controller = ViewNavigator.switchTo("/MainView.fxml",
+                "Superbattles - " + selected.getSuperhero().getName());
+        controller.initPartita(selected);
     }
 
     private void showInfo(String message) {

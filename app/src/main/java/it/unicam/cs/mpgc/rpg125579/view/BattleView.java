@@ -2,9 +2,10 @@ package it.unicam.cs.mpgc.rpg125579.view;
 
 import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
+import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreCombattimento;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
-import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,6 +32,9 @@ public class BattleView {
     private final GestoreCombattimento gestoreCombattimento = new GestoreCombattimento();
     private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
     private final Controller<Character> characterController = new BasicController<>(Character.class);
+    private final Controller<Partita> partitaController = new BasicController<>(Partita.class);
+
+    private Partita partita;
     private Superhero hero;
     private Character enemy;
 
@@ -41,8 +45,9 @@ public class BattleView {
     private int turnsSinceHeal = HEAL_COOLDOWN_TURNS;
     private boolean battleOver = false;
 
-    public void initBattle(Superhero hero, Character enemy) {
-        this.hero = hero;
+    public void initBattle(Partita partita, Character enemy) {
+        this.partita = partita;
+        this.hero = partita.getSuperhero();
         this.enemy = enemy;
         this.battleOver = false;
         this.turnsSinceHeal = HEAL_COOLDOWN_TURNS;
@@ -118,7 +123,7 @@ public class BattleView {
         persistState();
 
         MainView controller = ViewNavigator.switchTo("/MainView.fxml", "Superbattles - " + hero.getName());
-        controller.initHero(hero);
+        controller.initPartita(partita);
     }
 
     private void eseguiTurnoNemico() {
@@ -144,10 +149,6 @@ public class BattleView {
         return false;
     }
 
-    /**
-     * Calcola e assegna l'XP guadagnata dalla vittoria, aggiornando il log
-     * e le label se l'eroe è salito di livello (anche più volte).
-     */
     private void assegnaEsperienzaESegnala() {
         int xpOttenuta = gestoreLivelli.calcolaEsperienzaOttenuta(enemy);
         int livelliGuadagnati = gestoreLivelli.assegnaEsperienza(hero, xpOttenuta);
@@ -188,6 +189,8 @@ public class BattleView {
         } else {
             characterController.update(enemy);
         }
+        partita.aggiornaSalvataggio();
+        partitaController.update(partita);
     }
 
     private void updateHealButtonAvailability() {
