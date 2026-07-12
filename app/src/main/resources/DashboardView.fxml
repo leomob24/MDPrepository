@@ -40,6 +40,8 @@
             <TableColumn fx:id="colAtk" prefWidth="60.0" text="ATK" />
             <TableColumn fx:id="colDef" prefWidth="60.0" text="DEF" />
             <TableColumn fx:id="colBonus" prefWidth="60.0" text="Bonus" />
+            <TableColumn fx:id="colLevel" prefWidth="70.0" text="Livello" />
+            <TableColumn fx:id="colOndata" prefWidth="70.0" text="Ondata" />
         </columns>
     </TableView>
 

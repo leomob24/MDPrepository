@@ -81,14 +81,14 @@
 
                 <Button fx:id="btnCura" mnemonicParsing="false" onAction="#handleHeal" text="CURA" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="80.0">
                     <tooltip>
-                        <Tooltip text="Solo 1 volta ogni 3 turni" />
+                        <Tooltip text="Ripristina HP, max 3 volte a combattimento, ogni 3 turni" />
                     </tooltip>
                 </Button>
 
                 <Button fx:id="btnScappa" mnemonicParsing="false" onAction="#handleEscape" text="SCAPPA" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="80.0"/>
             </GridPane>
+            <Label fx:id="lblCuraInfo" text="Cura: +25 HP — 3/3 rimaste" style="-fx-font-size: 11px; -fx-text-fill: gray;" wrapText="true" />
         </VBox>
-
         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
             <Label text="Log di battaglia" />
             <TextArea fx:id="txtBattleLog" editable="false" prefHeight="150.0" wrapText="true" VBox.vgrow="ALWAYS" />

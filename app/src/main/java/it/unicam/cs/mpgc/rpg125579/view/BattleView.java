@@ -26,6 +26,8 @@ public class BattleView {
     @FXML private Label lblEnemyAtk;
     @FXML private Label lblEnemyDef;
 
+    @FXML private Label lblCuraInfo;
+
     @FXML private TextArea txtBattleLog;
     @FXML private Button btnAtk, btnDef, btnCura, btnScappa;
 
@@ -38,11 +40,13 @@ public class BattleView {
     private Superhero hero;
     private Character enemy;
 
-    private static final int HEAL_AMOUNT = 25;
+    private static final int HEAL_AMOUNT = 8;
     private static final int HEAL_COOLDOWN_TURNS = 3;
+    private static final int MAX_CURE_PER_BATTLE = 3;
     private static final double DEFEND_BONUS_MULTIPLIER = 1.5;
 
     private int turnsSinceHeal = HEAL_COOLDOWN_TURNS;
+    private int cureUsate = 0;
     private boolean battleOver = false;
 
     public void initBattle(Partita partita, Character enemy) {
@@ -51,6 +55,7 @@ public class BattleView {
         this.enemy = enemy;
         this.battleOver = false;
         this.turnsSinceHeal = HEAL_COOLDOWN_TURNS;
+        this.cureUsate = 0;
 
         refreshLabels();
         txtBattleLog.clear();
@@ -102,15 +107,25 @@ public class BattleView {
     @FXML
     void handleHeal(ActionEvent event) {
         if (battleOver) return;
+
+        if (cureUsate >= MAX_CURE_PER_BATTLE) {
+            txtBattleLog.appendText("Hai già usato tutte le cure disponibili per questo combattimento.\n");
+            return;
+        }
         if (turnsSinceHeal < HEAL_COOLDOWN_TURNS) {
             txtBattleLog.appendText("Cura non ancora disponibile.\n");
             return;
         }
 
-        int nuoviHp = Math.min(hero.getHpAttuali() + HEAL_AMOUNT, hero.getHp());
+        int nuoviHp = Math.min(hero.getHpAttuali() + (HEAL_AMOUNT*hero.getHp()/100), hero.getHp());
+        int recuperati = nuoviHp - hero.getHpAttuali();
         hero.setHpAttuali(nuoviHp);
         turnsSinceHeal = 0;
-        txtBattleLog.appendText("Hai usato Cura! HP ripristinati a " + hero.getHpAttuali() + "/" + hero.getHp() + ".\n");
+        cureUsate++;
+
+        txtBattleLog.appendText("Hai usato Cura! Hai recuperato " + recuperati + " HP ("
+                + hero.getHpAttuali() + "/" + hero.getHp() + "). Cure rimaste: "
+                + (MAX_CURE_PER_BATTLE - cureUsate) + "/" + MAX_CURE_PER_BATTLE + ".\n");
         lblHeroHp.setText(hero.getHpAttuali() + "/" + hero.getHp());
         updateHealButtonAvailability();
 
@@ -157,7 +172,7 @@ public class BattleView {
         if (livelliGuadagnati > 0) {
             txtBattleLog.appendText("⭐ LEVEL UP! Ora sei livello " + hero.getLivello()
                     + " (" + (livelliGuadagnati > 1 ? livelliGuadagnati + " livelli guadagnati, " : "")
-                    + "statistiche aumentate, HP ripristinati)!\n");
+                    + "statistiche massime aumentate)!\n");
         }
         lblHeroLevel.setText("Lv. " + hero.getLivello());
         lblHeroXp.setText(hero.getEsperienza() + "/" + gestoreLivelli.esperienzaRichiesta(hero.getLivello()) + " XP");
@@ -193,8 +208,16 @@ public class BattleView {
         partitaController.update(partita);
     }
 
+    /**
+     * Aggiorna sia la disponibilità del bottone Cura (cooldown + tetto massimo)
+     * sia la label informativa che mostra quanto si curerà e quante cure restano.
+     */
     private void updateHealButtonAvailability() {
-        boolean disponibile = turnsSinceHeal >= HEAL_COOLDOWN_TURNS;
-        btnCura.setDisable(!disponibile || battleOver);
+        boolean cooldownOk = turnsSinceHeal >= HEAL_COOLDOWN_TURNS;
+        boolean cureResidue = cureUsate < MAX_CURE_PER_BATTLE;
+        btnCura.setDisable(!cooldownOk || !cureResidue || battleOver);
+
+        lblCuraInfo.setText("Cura: +" + (HEAL_AMOUNT*hero.getHp()/100) + " HP — "
+                + (MAX_CURE_PER_BATTLE - cureUsate) + "/" + MAX_CURE_PER_BATTLE + " rimaste");
     }
 }

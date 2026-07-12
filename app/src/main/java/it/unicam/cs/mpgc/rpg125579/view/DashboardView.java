@@ -22,6 +22,8 @@ public class DashboardView {
     @FXML private TableColumn<Partita, Number> colAtk;
     @FXML private TableColumn<Partita, Number> colDef;
     @FXML private TableColumn<Partita, Number> colBonus;
+    @FXML private TableColumn<Partita, Number> colLevel;
+    @FXML private TableColumn<Partita, Number> colOndata;
     @FXML private Button btnSuperpowers, btnRules, btnNewGame, btnDeleteGame, btnResumeSelected;
 
     private final Controller<Character> characterController = new BasicController<>(Character.class);
@@ -41,6 +43,10 @@ public class DashboardView {
                 new SimpleIntegerProperty(data.getValue().getSuperhero().getDef()));
         colBonus.setCellValueFactory(data ->
                 new SimpleIntegerProperty(data.getValue().getSuperhero().getBonusAtk()));
+        colLevel.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getSuperhero().getLivello()));
+        colOndata.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getOndataAttuale()));
 
         refreshGamesTable();
     }
@@ -83,15 +89,12 @@ public class DashboardView {
             return;
         }
 
-        // Elimina i nemici (Mostro) di proprietà di questa partita, altrimenti
-        // resterebbero "orfani" nel database.
         characterController.getAll().stream()
                 .filter(c -> c instanceof Mostro)
                 .map(c -> (Mostro) c)
                 .filter(m -> m.getOwner() != null && selected.getId().equals(m.getOwner().getId()))
                 .forEach(m -> characterController.remove(m.getId()));
 
-        // Cascade ALL + orphanRemoval: elimina anche il Superhero associato.
         partitaController.remove(selected.getId());
         refreshGamesTable();
     }

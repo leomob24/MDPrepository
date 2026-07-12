@@ -69,8 +69,9 @@ public class GestoreLivelli {
         if (hero.getLivello() % 2 == 0) {
             hero.setBonusAtk(hero.getBonusAtk() + BONUS_ATK_OGNI_DUE_LIVELLI);
         }
-
-        // Il level-up cura completamente l'eroe: incentiva il rischio di continuare a combattere.
-        hero.setHpAttuali(hero.getHp());
+        // Il level-up aumenta le statistiche massime (compreso l'HP massimo),
+        // ma NON ripristina la vita attuale: l'eroe resta ferito quanto era
+        // prima della vittoria, per mantenere un minimo di rischio anche
+        // dopo un level-up.
     }
 }
