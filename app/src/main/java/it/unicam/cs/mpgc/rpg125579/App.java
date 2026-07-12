@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg125579;
 
+import it.unicam.cs.mpgc.rpg125579.utility.SuperpowerSeeder;
 import it.unicam.cs.mpgc.rpg125579.view.ViewNavigator;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -12,7 +13,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        SuperpowerSeeder.seedIfEmpty();
         ViewNavigator.setPrimaryStage(stage);
+        stage.setFullScreen(true);
         ViewNavigator.switchTo("/DashboardView.fxml", "Superbattles");
         stage.show();
     }
