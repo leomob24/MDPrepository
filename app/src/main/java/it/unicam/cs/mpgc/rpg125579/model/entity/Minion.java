@@ -29,9 +29,11 @@ public class Minion extends Mostro {
      * @param atk Punti attacco assegnati
      * @param def Punti difesa assegnati
      * @param hp Punti vita assegnati
+     * @param bonusAtk Punti bonus per l'attacco
+     * @param owner Supereroe proprietario del minion
      */
-    private Minion(String name, int atk, int def, int hp, Superhero owner) {
-        super(name, atk, def, hp, 0, owner);
+    private Minion(String name, int atk, int def, int hp, int bonusAtk, Superhero owner) {
+        super(name, atk, def, hp, bonusAtk, owner);
     }
     /**
      * Metodo statico per la creazione di un nuovo Minion Random
@@ -40,9 +42,10 @@ public class Minion extends Mostro {
     public static Minion generateMinion(Superhero owner) {
         Random random = new Random();
         String name = MINION_NAMES[random.nextInt(MINION_NAMES.length)];
-        int atk = random.nextInt(10) + 10;
-        int def = random.nextInt(5) + 5;
-        int hp = random.nextInt(50) + 20;
-        return new Minion(name, atk, def, hp, owner);
+        int atk = random.nextInt(8) + 8;        // 8-15
+        int def = random.nextInt(4) + 4;        // 4-7
+        int hp = random.nextInt(30) + 15;       // 15-44
+        int bonusAtk = random.nextInt(3);       // 0-2
+        return new Minion(name, atk, def, hp, bonusAtk, owner);
     }
 }

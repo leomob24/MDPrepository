@@ -6,6 +6,7 @@ public class GestoreCombattimento {
 
     private static final Random random = new Random();
     private static final int BONUS_CHANCE = 20; // 20% di probabilità
+    private static final int DANNO_MINIMO = 1; // Danno minimo garantito
 
     public void eseguiAttacco(Character attaccante, Character difensore) {
         int danno = calcolaDanno(attaccante, difensore);
@@ -20,7 +21,7 @@ public class GestoreCombattimento {
         if (random.nextInt(100) < BONUS_CHANCE) {
             atkBase += a.getBonusAtk();
         }
-
-        return Math.max(atkBase - d.getDef(), 0);
+        
+        return Math.max(atkBase - d.getDef(), DANNO_MINIMO);
     }
 }

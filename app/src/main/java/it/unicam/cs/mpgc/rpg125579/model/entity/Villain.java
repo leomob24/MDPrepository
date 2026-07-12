@@ -45,10 +45,10 @@ public class Villain extends Mostro {
     public static Villain generateVillain(Superhero owner) {
         Random random = new Random();
         String name = VILLAIN_NAMES[random.nextInt(VILLAIN_NAMES.length)];
-        int atk = random.nextInt(20) + 30;
-        int hp = random.nextInt(100) + 100;
-        int def = random.nextInt(10) + 10;
-        int bonusAtk = random.nextInt(5) + 1;
+        int atk = random.nextInt(15) + 20;      // 20-34
+        int hp = random.nextInt(60) + 80;       // 80-139
+        int def = random.nextInt(8) + 8;        // 8-15
+        int bonusAtk = random.nextInt(4) + 2;   // 2-5
         return new Villain(name, atk, hp, def, bonusAtk, owner);
     }
 }
