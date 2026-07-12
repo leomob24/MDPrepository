@@ -19,6 +19,7 @@
         <mapping class="it.unicam.cs.mpgc.rpg125579.model.entity.Villain"/>
         <mapping class="it.unicam.cs.mpgc.rpg125579.model.entity.Minion"/>
         <mapping class="it.unicam.cs.mpgc.rpg125579.model.entity.Partita"/>
+        <mapping class="it.unicam.cs.mpgc.rpg125579.model.entity.Battaglia"/>
         <mapping class="it.unicam.cs.mpgc.rpg125579.model.power.Superpower"/>
 
     </session-factory>
