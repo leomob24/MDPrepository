@@ -36,7 +36,11 @@ public final class ViewNavigator {
                     Objects.requireNonNull(ViewNavigator.class.getResource(fxmlPath))
             );
             Parent root = loader.load();
-            primaryStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    Objects.requireNonNull(ViewNavigator.class.getResource("/styles/app.css")).toExternalForm()
+            );
+            primaryStage.setScene(scene);
             primaryStage.setTitle(title);
             return loader.getController();
         } catch (IOException e) {

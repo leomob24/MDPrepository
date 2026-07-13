@@ -18,7 +18,7 @@
     <!-- Sezione Informazioni Combattenti -->
     <HBox spacing="50.0" alignment="CENTER">
         <!-- Info Eroe -->
-        <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-border-color: blue; -fx-border-width: 2; -fx-padding: 10; -fx-border-radius: 5;">
+        <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="hero-box">
             <Label text="EROE">
                 <font><Font name="System Bold" size="18.0" /></font>
             </Label>
@@ -50,7 +50,7 @@
         </Label>
 
         <!-- Info Nemico -->
-        <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-border-color: red; -fx-border-width: 2; -fx-padding: 10; -fx-border-radius: 5;">
+        <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="enemy-box">
             <Label text="NEMICO">
                 <font><Font name="System Bold" size="18.0" /></font>
             </Label>
@@ -76,16 +76,16 @@
     <HBox spacing="20.0" VBox.vgrow="ALWAYS">
         <VBox spacing="10.0" alignment="CENTER">
             <GridPane hgap="10.0" vgap="10.0">
-                <Button fx:id="btnAtk" mnemonicParsing="false" onAction="#handleAttack" text="ATK" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="80.0"/>
-                <Button fx:id="btnDef" mnemonicParsing="false" onAction="#handleDefend" text="DIFESA" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="80.0"/>
+                <Button fx:id="btnAtk" mnemonicParsing="false" onAction="#handleAttack" text="ATK" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="100.0"/>
+                <Button fx:id="btnDef" mnemonicParsing="false" onAction="#handleDefend" text="DIFESA" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="100.0"/>
 
-                <Button fx:id="btnCura" mnemonicParsing="false" onAction="#handleHeal" text="CURA" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="80.0">
+                <Button fx:id="btnCura" mnemonicParsing="false" onAction="#handleHeal" text="CURA" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="100.0">
                     <tooltip>
                         <Tooltip text="Ripristina HP, max 3 volte a combattimento, ogni 3 turni" />
                     </tooltip>
                 </Button>
 
-                <Button fx:id="btnScappa" mnemonicParsing="false" onAction="#handleEscape" text="SCAPPA" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="80.0"/>
+                <Button fx:id="btnScappa" mnemonicParsing="false" onAction="#handleEscape" text="SCAPPA" styleClass="button-danger" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="100.0"/>
             </GridPane>
             <Label fx:id="lblCuraInfo" text="Cura: +25 HP — 3/3 rimaste" style="-fx-font-size: 11px; -fx-text-fill: gray;" wrapText="true" />
         </VBox>

@@ -7,6 +7,7 @@ import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli;
 import it.unicam.cs.mpgc.rpg125579.model.service.GestoreOndate;
+import it.unicam.cs.mpgc.rpg125579.utility.AlertFactory;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainView {
@@ -136,11 +138,7 @@ public class MainView {
     }
 
     private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(lblHeroName.getScene().getWindow());
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        AlertFactory.mostraInfo(lblHeroName.getScene().getWindow(), message);
     }
 
     @FXML

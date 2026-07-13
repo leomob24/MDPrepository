@@ -7,6 +7,7 @@ import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Villain;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.power.Superpower;
+import it.unicam.cs.mpgc.rpg125579.utility.AlertFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -17,6 +18,7 @@ import javafx.scene.control.TextField;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GameCreationView {
 
@@ -71,12 +73,7 @@ public class GameCreationView {
     }
 
     private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.initOwner(txtName.getScene().getWindow());
-        alert.setTitle("Dati incompleti");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        AlertFactory.mostraAvviso(txtName.getScene().getWindow(), "Dati incompleti", message);
     }
 
     @FXML

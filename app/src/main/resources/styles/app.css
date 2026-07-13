@@ -1,0 +1,198 @@
+/* ===== Palette colori tema "Superbattles" ===== */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: #1e1e2e;
+    -color-primary: #6c5ce7;
+    -color-primary-dark: #5344cc;
+    -color-accent: #00d9a3;
+    -color-danger: #e74c3c;
+    -color-surface: #2a2a3d;
+    -color-surface-light: #34344a;
+    -color-text: #f0f0f5;
+    -color-text-muted: #a0a0b8;
+}
+
+/* ===== Labels ===== */
+.label {
+    -fx-text-fill: -color-text;
+}
+
+/* ===== Bottoni ===== */
+.button {
+    -fx-background-color: -color-primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12 8 12;   /* era 8 16 8 16 */
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -color-primary-dark;
+}
+
+.button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* Bottoni di azione principali (Create, Sfida) */
+.button-primary {
+    -fx-background-color: -color-accent;
+}
+
+.button-primary:hover {
+    -fx-background-color: derive(-color-accent, -15%);
+}
+
+/* Bottoni pericolosi (Delete, Scappa) */
+.button-danger {
+    -fx-background-color: -color-danger;
+}
+
+.button-danger:hover {
+    -fx-background-color: derive(-color-danger, -15%);
+}
+
+/* ===== TextField / ComboBox ===== */
+.text-field, .combo-box {
+    -fx-background-color: -color-surface-light;
+    -fx-text-fill: -color-text;
+    -fx-background-radius: 4;
+    -fx-border-color: transparent;
+    -fx-padding: 6;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: -color-accent;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 4;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: -color-text;
+    -fx-background-color: -color-surface-light;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -color-surface;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -color-primary;
+    -fx-text-fill: white;
+}
+
+/* ===== TableView ===== */
+.table-view {
+    -fx-background-color: -color-surface;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header,
+.table-view .column-header-background,
+.table-view .filler {
+    -fx-background-color: -color-surface-light;
+    -fx-size: 32;
+}
+
+.table-view .column-header-background .label,
+.table-view .column-header .label {
+    -fx-text-fill: -color-text;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-row-cell {
+    -fx-background-color: -color-surface;
+    -fx-text-fill: -color-text;
+    -fx-border-color: transparent transparent #1e1e2e transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-color-surface, 5%);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -color-primary;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -color-text;
+}
+
+/* ===== Alert / Dialog ===== */
+.dialog-pane {
+    -fx-background-color: -color-surface;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -color-surface-light;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: -color-text;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.dialog-pane .content.label {
+    -fx-text-fill: -color-text;
+}
+
+.dialog-pane:header .graphic-container {
+    -fx-background-color: transparent;
+}
+
+/* ===== TextArea (log di battaglia) ===== */
+.text-area {
+    -fx-control-inner-background: #16161f;
+    -fx-text-fill: #d0d0e0;
+    -fx-font-family: "Consolas", "Courier New", monospace;
+}
+
+/* ===== ListView (catalogo superpoteri) ===== */
+.list-view {
+    -fx-background-color: -color-surface;
+}
+
+.list-cell {
+    -fx-background-color: -color-surface;
+    -fx-text-fill: -color-text;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: -color-primary;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: -color-surface-light;
+}
+
+/* ===== Barre HP (se vuoi aggiungerle in futuro con ProgressBar) ===== */
+.progress-bar > .bar {
+    -fx-background-color: -color-accent;
+}
+
+.progress-bar > .track {
+    -fx-background-color: -color-surface-light;
+}
+
+/* ===== Riquadri EROE / NEMICO in BattleView ===== */
+.hero-box {
+    -fx-border-color: -color-accent;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-background-color: derive(-color-accent, -85%);
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}
+
+.enemy-box {
+    -fx-border-color: -color-danger;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-background-color: derive(-color-danger, -85%);
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}

@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg125579.controller.*;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Character;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Mostro;
 import it.unicam.cs.mpgc.rpg125579.model.entity.Partita;
+import it.unicam.cs.mpgc.rpg125579.utility.AlertFactory;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DashboardView {
 
@@ -66,18 +68,18 @@ public class DashboardView {
 
     @FXML
     void handleShowRules(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(gamesTable.getScene().getWindow());
-        alert.setTitle("Rules");
-        alert.setHeaderText("Come si gioca");
-        alert.setContentText("""
-            1. Crea un Superhero scegliendo un Superpower.
-            2. Alla creazione, il gioco genera automaticamente i nemici (Villain + Minion).
-            3. Sfida un nemico dalla lista per iniziare la battaglia.
-            4. In battaglia scegli ogni turno: Attacca, Difendi, Cura o Scappa.
-            5. Sconfiggi tutti i nemici di un'ondata per affrontarne una nuova, più difficile.
-            """);
-        alert.showAndWait();
+        AlertFactory.mostraInfoConTestoScorrevole(
+                gamesTable.getScene().getWindow(),
+                "Rules",
+                "Come si gioca",
+                """
+                1. Crea un Superhero scegliendo un Superpower.
+                2. Alla creazione, il gioco genera automaticamente i nemici (Villain + Minion).
+                3. Sfida un nemico dalla lista per iniziare la battaglia.
+                4. In battaglia scegli ogni turno: Attacca, Difendi, Cura o Scappa.
+                5. Sconfiggi tutti i nemici di un'ondata per affrontarne una nuova, più difficile.
+                """
+        );
     }
 
     @FXML
@@ -116,10 +118,6 @@ public class DashboardView {
     }
 
     private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(gamesTable.getScene().getWindow());
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        AlertFactory.mostraInfo(gamesTable.getScene().getWindow(), message);
     }
 }

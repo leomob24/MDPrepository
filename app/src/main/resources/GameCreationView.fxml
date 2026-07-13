@@ -31,6 +31,6 @@
 
     <HBox spacing="10.0">
         <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-        <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#handleCreateHero" text="Create" />
+        <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#handleCreateHero" text="Create" styleClass="button-primary" />
     </HBox>
 </VBox>

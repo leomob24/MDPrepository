@@ -48,7 +48,7 @@
 
     <HBox spacing="15.0">
         <Button fx:id="btnNewGame" mnemonicParsing="false" onAction="#handleNewGame" text="NEW GAME" />
-        <Button fx:id="btnDeleteGame" mnemonicParsing="false" onAction="#handleDeleteGame" text="DELETE GAME" />
+        <Button fx:id="btnDeleteGame" mnemonicParsing="false" onAction="#handleDeleteGame" text="DELETE GAME" styleClass="button-danger" />
         <Region HBox.hgrow="ALWAYS" />
         <Button fx:id="btnResumeSelected" mnemonicParsing="false" onAction="#handleResumeGame" text="RESUME SELECTED" />
     </HBox>

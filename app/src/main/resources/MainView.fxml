@@ -32,7 +32,7 @@
         <Label fx:id="lblOndata" text="Ondata: ---" />
         <HBox spacing="10.0">
             <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <Button fx:id="btnSfida" mnemonicParsing="false" onAction="#handleChallengeEnemy" text="SFIDA" />
+            <Button fx:id="btnSfida" mnemonicParsing="false" onAction="#handleChallengeEnemy" text="SFIDA" styleClass="button-primary" />
         </HBox>
     </VBox>
 
