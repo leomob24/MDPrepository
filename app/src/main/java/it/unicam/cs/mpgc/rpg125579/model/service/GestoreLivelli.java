@@ -25,6 +25,9 @@ public class GestoreLivelli {
      * Calcola l'esperienza ottenuta sconfiggendo un nemico, proporzionale
      * alla sua potenza complessiva. Un Villain forte rende quindi più
      * esperienza dei Minion, incentivando strategie diverse.
+     *
+     * @param nemicoSconfitto Il nemico da cui calcolare l'XP
+     * @return L'esperienza ottenuta dalla sconfitta
      */
     public int calcolaEsperienzaOttenuta(Character nemicoSconfitto) {
         return nemicoSconfitto.getAtk()
@@ -35,9 +38,12 @@ public class GestoreLivelli {
 
     /**
      * Assegna l'esperienza guadagnata all'eroe, applicando eventuali
-     * level-up (anche multipli) in cascata.
+     * level-up (anche multipli) in cascata fino a che l'eroe non ha
+     * esperienza sufficiente per il prossimo livello.
      *
-     * @return numero di livelli guadagnati con questa assegnazione (0 se nessuno)
+     * @param hero L'eroe a cui assegnare l'esperienza
+     * @param xpOttenuta L'ammontare di XP da assegnare
+     * @return Numero di livelli guadagnati con questa assegnazione (0 se nessuno)
      */
     public int assegnaEsperienza(Superhero hero, int xpOttenuta) {
         hero.setEsperienza(hero.getEsperienza() + xpOttenuta);
@@ -52,12 +58,22 @@ public class GestoreLivelli {
 
     /**
      * Restituisce l'esperienza totale necessaria per passare dal livello
-     * indicato al successivo.
+     * indicato al livello successivo (incrementale, non cumulativa).
+     *
+     * @param livelloAttuale Il livello corrente
+     * @return L'esperienza richiesta per raggiungere il prossimo livello
      */
     public int esperienzaRichiesta(int livelloAttuale) {
         return XP_BASE + (livelloAttuale - 1) * XP_INCREMENTO_PER_LIVELLO;
     }
 
+    /**
+     * Esegue un level-up sull'eroe: decrementa l'XP, incrementa il livello,
+     * e applica i bonus statistici corrispondenti.
+     * Nota: HP attuali NON vengono ripristinati per mantenere il rischio.
+     *
+     * @param hero L'eroe da potenziare
+     */
     private void levelUp(Superhero hero) {
         int xpRichiesta = esperienzaRichiesta(hero.getLivello());
         hero.setEsperienza(hero.getEsperienza() - xpRichiesta);

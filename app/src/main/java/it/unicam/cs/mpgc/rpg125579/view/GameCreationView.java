@@ -20,6 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Controller FXML per la schermata di creazione di una nuova partita.
+ * Consente all'utente di scegliere un nome per l'eroe e selezionare un superpotere
+ * da un elenco predefinito. Una volta confermato, crea una nuova entità {@link Partita}
+ * con il relativo {@link Superhero} e l'ondata iniziale di nemici.
+ */
 public class GameCreationView {
 
     @FXML private TextField txtName;

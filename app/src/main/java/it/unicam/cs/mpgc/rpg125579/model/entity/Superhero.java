@@ -17,6 +17,9 @@ public class Superhero extends Character implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Superpotere associato a questo eroe. Determina i bonus statistici iniziali.
+     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "superpower_id", referencedColumnName = "id")
     private Superpower superpower;
@@ -27,7 +30,7 @@ public class Superhero extends Character implements Serializable {
     private int livello;
 
     /**
-     * Punti esperienza accumulati nel livello corrente.
+     * Punti esperienza accumulati nel livello corrente. Gestito da {@link it.unicam.cs.mpgc.rpg125579.model.service.GestoreLivelli}.
      */
     private int esperienza;
 

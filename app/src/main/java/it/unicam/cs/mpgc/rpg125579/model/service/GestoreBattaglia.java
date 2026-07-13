@@ -25,19 +25,49 @@ public class GestoreBattaglia {
     private final GestoreCombattimento gestoreCombattimento = new GestoreCombattimento();
     private final GestoreLivelli gestoreLivelli = new GestoreLivelli();
 
+    /**
+     * Verifica se una cura è disponibile per il turno corrente della battaglia.
+     * Una cura è disponibile se: il numero di cure usate è inferiore al massimo
+     * AND il cooldown (turnsSinceHeal) è trascorso.
+     *
+     * @param battaglia La battaglia in corso
+     * @return true se una cura può essere usata, false altrimenti
+     */
     public boolean isCuraDisponibile(Battaglia battaglia) {
         return battaglia.getCureUsate() < MAX_CURE_PER_BATTLE
                 && battaglia.getTurnsSinceHeal() >= HEAL_COOLDOWN_TURNS;
     }
 
+    /**
+     * Restituisce il numero di cure rimanenti disponibili in questa battaglia.
+     *
+     * @param battaglia La battaglia in corso
+     * @return Il numero di cure ancora utilizzabili
+     */
     public int getCureRimaste(Battaglia battaglia) {
         return MAX_CURE_PER_BATTLE - battaglia.getCureUsate();
     }
 
+    /**
+     * Restituisce l'esperienza totale richiesta per passare dal livello attuale al successivo.
+     *
+     * @param hero L'eroe di cui calcolare l'esperienza richiesta
+     * @return Il totale di XP necessario per il livello successivo
+     */
     public int esperienzaRichiesta(Superhero hero) {
         return gestoreLivelli.esperienzaRichiesta(hero.getLivello());
     }
 
+    /**
+     * Esegue un attacco dell'eroe verso il nemico, gestendo il turno successivo del nemico.
+     * Se il nemico viene sconfitto, la battaglia termina con vittoria dell'eroe.
+     * Altrimenti, il nemico contrattacca.
+     *
+     * @param battaglia La battaglia in corso
+     * @param hero L'eroe attaccante
+     * @param enemy Il nemico difensore
+     * @return RisultatoAttacco indicante se il nemico è stato sconfitto o l'eroe
+     */
     public RisultatoAttacco eseguiAttacco(Battaglia battaglia, Superhero hero, Character enemy) {
         gestoreCombattimento.eseguiAttacco(hero, enemy);
         if (enemy.getHpAttuali() <= 0) {
@@ -48,6 +78,15 @@ public class GestoreBattaglia {
         return new RisultatoAttacco(false, eroeSconfitto);
     }
 
+    /**
+     * Esegue una difesa dell'eroe (aumenta temporaneamente la difesa del 50%),
+     * seguito dal turno di contrattacco del nemico.
+     *
+     * @param battaglia La battaglia in corso
+     * @param hero L'eroe che si difende
+     * @param enemy Il nemico che contrattacca
+     * @return RisultatoAttacco indicante il risultato del contrattacco
+     */
     public RisultatoAttacco eseguiDifesa(Battaglia battaglia, Superhero hero, Character enemy) {
         int defOriginale = hero.getDef();
         hero.setDef((int) Math.round(defOriginale * DEFEND_BONUS_MULTIPLIER));
@@ -58,6 +97,15 @@ public class GestoreBattaglia {
         return new RisultatoAttacco(false, eroeSconfitto);
     }
 
+    /**
+     * Applica una cura all'eroe se disponibile, seguita dal turno di contrattacco del nemico.
+     * Se la cura non è disponibile, restituisce il motivo del rifiuto.
+     *
+     * @param battaglia La battaglia in corso
+     * @param hero L'eroe da curare
+     * @param enemy Il nemico che potrebbe contrattaccare
+     * @return RisultatoCura con dettagli del risultato (accettata/rifiutata, HP recuperati, ecc.)
+     */
     public RisultatoCura eseguiCura(Battaglia battaglia, Superhero hero, Character enemy) {
         if (!isCuraDisponibile(battaglia)) {
             String motivo = battaglia.getCureUsate() >= MAX_CURE_PER_BATTLE
@@ -76,12 +124,29 @@ public class GestoreBattaglia {
         return RisultatoCura.eseguita(recuperati, getCureRimaste(battaglia), eroeSconfitto);
     }
 
+    /**
+     * Assegna l'esperienza ottenuta dalla vittoria e calcola eventuali level-up.
+     * Delega a {@link GestoreLivelli} il calcolo dell'esperienza e del level-up.
+     *
+     * @param hero L'eroe che ha vinto
+     * @param enemy Il nemico sconfitto
+     * @return RisultatoVittoria contenente XP ottenuta e livelli guadagnati
+     */
     public RisultatoVittoria assegnaEsperienzaVittoria(Superhero hero, Character enemy) {
         int xpOttenuta = gestoreLivelli.calcolaEsperienzaOttenuta(enemy);
         int livelliGuadagnati = gestoreLivelli.assegnaEsperienza(hero, xpOttenuta);
         return new RisultatoVittoria(xpOttenuta, livelliGuadagnati);
     }
 
+    /**
+     * Esegue il turno di combattimento del nemico (contrattacco).
+     * Incrementa il cooldown delle cure e applica il danno del nemico all'eroe.
+     *
+     * @param battaglia La battaglia in corso
+     * @param hero L'eroe che subisce il contrattacco
+     * @param enemy Il nemico che contrattacca
+     * @return true se l'eroe è stato sconfitto, false altrimenti
+     */
     private boolean eseguiTurnoNemico(Battaglia battaglia, Superhero hero, Character enemy) {
         battaglia.setTurnsSinceHeal(battaglia.getTurnsSinceHeal() + 1);
         gestoreCombattimento.eseguiAttacco(enemy, hero);

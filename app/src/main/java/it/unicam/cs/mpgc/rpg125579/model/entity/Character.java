@@ -23,13 +23,35 @@ public abstract class Character {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Nome univoco del personaggio.
+     */
     @Column(nullable = false)
     private String name;
 
+    /**
+     * Punti di attacco base del personaggio.
+     */
     private int atk;
+
+    /**
+     * Punti di difesa base del personaggio.
+     */
     private int def;
+
+    /**
+     * Punti vita massimi del personaggio.
+     */
     private int hp;
+
+    /**
+     * Punti vita attuali del personaggio (non superiori a hp).
+     */
     private int hpAttuali;
+
+    /**
+     * Bonus di attacco aggiuntivo applicato con probabilità durante il combattimento.
+     */
     private int bonusAtk;
 
     /**
@@ -81,5 +103,10 @@ public abstract class Character {
         if (this == o) return true;
         if (!(o instanceof Character character)) return false;
         return id != null && id.equals(character.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

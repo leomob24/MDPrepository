@@ -94,4 +94,9 @@ public class Superpower implements Serializable {
         if (!(o instanceof Superpower that)) return false;
         return id != null && id.equals(that.id);
     }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

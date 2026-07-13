@@ -15,6 +15,12 @@ import javafx.scene.control.*;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Controller FXML per la schermata iniziale (Dashboard) dell'applicazione.
+ * Gestisce la visualizzazione della lista delle partite salvate con accesso rapido
+ * alle operazioni principali: creare nuova partita, continuare una partita, eliminare,
+ * visualizzare il catalogo dei superpoteri e le regole del gioco.
+ */
 public class DashboardView {
 
     @FXML private TableView<Partita> gamesTable;

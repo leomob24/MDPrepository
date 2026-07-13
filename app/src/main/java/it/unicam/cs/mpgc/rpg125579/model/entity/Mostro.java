@@ -19,6 +19,10 @@ public abstract class Mostro extends Character {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partita_id")
+    /**
+     * Proprietario della {@link Partita} a cui il nemico appartiene.
+     * Consente di tracciare a quale sessione di gioco il nemico è associato.
+     */
     private Partita owner;
 
     protected Mostro(String name, int atk, int def, int hp, int bonusAtk, Partita owner) {
