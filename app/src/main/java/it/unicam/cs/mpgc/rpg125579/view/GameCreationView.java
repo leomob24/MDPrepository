@@ -72,6 +72,7 @@ public class GameCreationView {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.initOwner(txtName.getScene().getWindow());
         alert.setTitle("Dati incompleti");
         alert.setHeaderText(null);
         alert.setContentText(message);

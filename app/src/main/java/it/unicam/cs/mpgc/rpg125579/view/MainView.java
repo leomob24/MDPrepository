@@ -50,6 +50,21 @@ public class MainView {
         this.hero = partita.getSuperhero();
         refreshHeroLabels();
         refreshEnemyTable();
+
+        if (partita.isGameOver()) {
+            applicaGameOver();
+        }
+    }
+
+    /**
+     * Disabilita l'accesso alle battaglie quando la partita è terminata per
+     * sconfitta dell'eroe. La partita resta comunque consultabile (statistiche,
+     * nemici rimasti) per scopi di classifica in Dashboard.
+     */
+    private void applicaGameOver() {
+        btnSfida.setDisable(true);
+        enemyTable.setDisable(true);
+        showInfo("Game Over! " + hero.getName() + " è stato sconfitto. Questa partita non può più essere continuata.");
     }
 
     private void refreshHeroLabels() {
@@ -71,6 +86,11 @@ public class MainView {
      * difficile, prima di mostrare la tabella.
      */
     private void refreshEnemyTable() {
+        if (partita.isGameOver()) {
+            enemyTable.setItems(FXCollections.observableArrayList(getNemiciViviDellaPartita()));
+            return;
+        }
+
         List<Character> nemiciVivi = getNemiciViviDellaPartita();
 
         if (nemiciVivi.isEmpty()) {
@@ -100,6 +120,11 @@ public class MainView {
 
     @FXML
     void handleChallengeEnemy(ActionEvent event) {
+        if (partita.isGameOver()) {
+            showInfo("Questa partita è terminata (Game Over): non puoi più affrontare battaglie.");
+            return;
+        }
+
         Character selected = enemyTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showInfo("Seleziona un nemico dalla lista prima di sfidarlo.");
@@ -112,6 +137,7 @@ public class MainView {
 
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(lblHeroName.getScene().getWindow());
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

@@ -164,7 +164,7 @@ public class BattleView {
 
         if (eroeSconfitto) {
             txtBattleLog.appendText("\n💀 Sei stato sconfitto da " + enemy.getName() + "...\n");
-            endBattle();
+            endBattle(true);
         } else {
             salvaProgressi();
         }
@@ -181,16 +181,15 @@ public class BattleView {
                     + "statistiche massime aumentate)!\n");
         }
         refreshLabels();
-        endBattle();
+        endBattle(false);
     }
 
     /**
-     * Conclude definitivamente lo scontro: rimuove il record {@link Battaglia}
-     * (non serve più: o il nemico è morto, o l'eroe ha perso) e persiste lo
-     * stato finale. La rimozione della battaglia precede quella del nemico
-     * per rispettare il vincolo di integrità referenziale (FK enemy_id).
+     * Conclude definitivamente lo scontro. Se {@code eroeSconfitto} è vero,
+     * marca la partita come terminata (Game Over): resta persistita per
+     * eventuale classifica, ma non sarà più possibile affrontare battaglie.
      */
-    private void endBattle() {
+    private void endBattle(boolean eroeSconfitto) {
         btnAtk.setDisable(true);
         btnDef.setDisable(true);
         btnCura.setDisable(true);
@@ -203,6 +202,10 @@ public class BattleView {
             characterController.remove(enemy.getId());
         } else {
             characterController.update(enemy);
+        }
+
+        if (eroeSconfitto) {
+            partita.setGameOver(true);
         }
         partita.aggiornaSalvataggio();
         partitaController.update(partita);

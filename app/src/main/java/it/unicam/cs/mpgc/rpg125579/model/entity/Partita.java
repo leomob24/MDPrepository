@@ -7,13 +7,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Rappresenta una sessione di gioco: collega un {@link Superhero} al suo
- * stato di avanzamento nella run corrente (ondata attuale, date di
- * creazione/salvataggio). Separata da {@code Superhero} per rispettare la
- * singola responsabilità: l'eroe descrive "quanto è forte il personaggio",
- * la Partita descrive "a che punto è arrivato il giocatore in questa run".
- */
 @Entity
 @Table(name = "partite")
 @Getter
@@ -31,6 +24,13 @@ public class Partita {
 
     private int ondataAttuale;
 
+    /**
+     * Indica se la partita è terminata a causa della sconfitta dell'eroe.
+     * Una volta a {@code true}, la partita resta visibile (es. per una
+     * classifica in Dashboard) ma non è più possibile affrontare battaglie.
+     */
+    private boolean gameOver;
+
     private LocalDateTime dataCreazione;
     private LocalDateTime dataUltimoSalvataggio;
 
@@ -40,15 +40,11 @@ public class Partita {
         }
         this.superhero = superhero;
         this.ondataAttuale = 1;
+        this.gameOver = false;
         this.dataCreazione = LocalDateTime.now();
         this.dataUltimoSalvataggio = LocalDateTime.now();
     }
 
-    /**
-     * Aggiorna il timestamp dell'ultimo salvataggio, da chiamare ogni volta
-     * che lo stato della partita viene persistito (es. dopo un turno di
-     * battaglia o al termine di uno scontro).
-     */
     public void aggiornaSalvataggio() {
         this.dataUltimoSalvataggio = LocalDateTime.now();
     }

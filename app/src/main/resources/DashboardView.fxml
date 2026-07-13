@@ -42,6 +42,7 @@
             <TableColumn fx:id="colBonus" prefWidth="60.0" text="Bonus" />
             <TableColumn fx:id="colLevel" prefWidth="70.0" text="Livello" />
             <TableColumn fx:id="colOndata" prefWidth="70.0" text="Ondata" />
+            <TableColumn fx:id="colStato" prefWidth="90.0" text="Stato" />
         </columns>
     </TableView>
 
