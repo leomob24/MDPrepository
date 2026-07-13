@@ -17,7 +17,7 @@ import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
  */
 public class GestoreBattaglia {
 
-    public static final int HEAL_AMOUNT = 12;
+    public static final int HEAL_AMOUNT = 17;
     public static final int HEAL_COOLDOWN_TURNS = 3;
     public static final int MAX_CURE_PER_BATTLE = 3;
     private static final double DEFEND_BONUS_MULTIPLIER = 1.5;
