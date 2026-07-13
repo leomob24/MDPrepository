@@ -17,7 +17,7 @@ import it.unicam.cs.mpgc.rpg125579.model.entity.Superhero;
  */
 public class GestoreBattaglia {
 
-    public static final int HEAL_AMOUNT = 25;
+    public static final int HEAL_AMOUNT = 12;
     public static final int HEAL_COOLDOWN_TURNS = 3;
     public static final int MAX_CURE_PER_BATTLE = 3;
     private static final double DEFEND_BONUS_MULTIPLIER = 1.5;
@@ -114,7 +114,7 @@ public class GestoreBattaglia {
             return RisultatoCura.rifiutata(motivo);
         }
 
-        int nuoviHp = Math.min(hero.getHpAttuali() + HEAL_AMOUNT, hero.getHp());
+        int nuoviHp = Math.min(hero.getHpAttuali() + (HEAL_AMOUNT*hero.getHp())/100, hero.getHp());
         int recuperati = nuoviHp - hero.getHpAttuali();
         hero.setHpAttuali(nuoviHp);
         battaglia.setTurnsSinceHeal(0);
