@@ -36,12 +36,27 @@ public final class ViewNavigator {
                     Objects.requireNonNull(ViewNavigator.class.getResource(fxmlPath))
             );
             Parent root = loader.load();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(ViewNavigator.class.getResource("/styles/app.css")).toExternalForm()
-            );
-            primaryStage.setScene(scene);
+
+            if (primaryStage.getScene() == null) {
+                // Primo avvio: creiamo la Scena, applichiamo il CSS e la settiamo
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(
+                        Objects.requireNonNull(ViewNavigator.class.getResource("/styles/app.css")).toExternalForm()
+                );
+                primaryStage.setScene(scene);
+            } else {
+                // Cambi di scena successivi: scambiamo solo il contenuto (root)
+                // Questo previene il bug dell'uscita dal Full Screen su Windows!
+                primaryStage.getScene().setRoot(root);
+            }
+
             primaryStage.setTitle(title);
+
+            // Forza il full screen (sicurezza aggiuntiva per Windows)
+            if (!primaryStage.isFullScreen()) {
+                primaryStage.setFullScreen(true);
+            }
+
             return loader.getController();
         } catch (IOException e) {
             throw new RuntimeException("Impossibile caricare " + fxmlPath, e);
